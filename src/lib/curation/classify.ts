@@ -7,9 +7,9 @@ export function classifyCampsite(c: Partial<Campsite>) {
   const isPublic =
     c.operatorType === "public_central" || c.operatorType === "public_local";
 
-  const price = c.price1Night ?? 0;
-  const isFree = price === 0;
-  const isCheap = price > 0 && price <= 30_000;
+  const price = c.price1Night;
+  const isFree = price === 0;                          // null = 가격 미상, 0 = 실제 무료
+  const isCheap = price != null && price > 0 && price <= 30_000;
 
   // 차박 가능 초기 분류 (이후 chabak-trust에서 세분화)
   const type = String(c.type ?? "").toLowerCase();

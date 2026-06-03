@@ -13,7 +13,9 @@
     "db:studio": "drizzle-kit studio",
     "collect": "tsx scripts/collect-bulk.ts",
     "collect:dry": "tsx scripts/collect-bulk.ts --dry-run",
+    "import:csv": "tsx scripts/import-csv.ts",
     "dedup": "tsx scripts/dedup-review.ts",
+    "matching:build": "tsx scripts/build-matching-json.ts",
     "backup": "tsx scripts/backup-db.ts"
   },
   "dependencies": {
