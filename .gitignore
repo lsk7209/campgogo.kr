@@ -37,6 +37,7 @@ yarn-error.log*
 
 # vercel
 .vercel
+# .vercel/project.json은 팀 공유 시 커밋 가능 — 현재는 제외
 
 # typescript
 *.tsbuildinfo
