@@ -8,8 +8,18 @@ import { SiteFooter } from "@/components/site-footer";
 import { CampsiteCard } from "@/components/campsite/campsite-card";
 import type { ChabakTrust } from "@/lib/curation/chabak-trust";
 
-export const revalidate = 3600;
 export const dynamic = "force-dynamic";
+
+function parsePhotos(raw: unknown): { url: string }[] {
+  if (Array.isArray(raw)) return raw as { url: string }[];
+  if (typeof raw === "string") {
+    try {
+      const p = JSON.parse(raw);
+      return Array.isArray(p) ? (p as { url: string }[]) : [];
+    } catch { return []; }
+  }
+  return [];
+}
 
 export const metadata: Metadata = {
   title: "캠핑고고 — 예약 앱이 못 보여주는 야영지",
@@ -93,7 +103,7 @@ export default async function HomePage() {
             </div>
             <div className="grid4">
               {featured.map((c) => {
-                const photos = (c.photos as { url: string }[] | null) ?? [];
+                const photos = parsePhotos(c.photos);
                 return (
                   <CampsiteCard
                     key={c.id}

@@ -42,12 +42,24 @@ export default async function CampsitePage({ params }: { params: Promise<{ sido:
   const row = await getPageWithCampsite(decodeURIComponent(slug));
   if (!row) notFound();
   const { pages: page, campsites: campsite } = row;
-  const faqs = (page.faqs as { question: string; answer: string }[] | null) ?? [];
-  const uniquePoints = (campsite.uniquePoints as string[] | null) ?? [];
-  const facilities = (campsite.facilities as Record<string, boolean> | null) ?? {};
+
+  function parseArr<T>(raw: unknown): T[] {
+    if (Array.isArray(raw)) return raw as T[];
+    if (typeof raw === "string") { try { const p = JSON.parse(raw); return Array.isArray(p) ? p : []; } catch { return []; } }
+    return [];
+  }
+  function parseObj(raw: unknown): Record<string, boolean> {
+    if (raw && typeof raw === "object" && !Array.isArray(raw)) return raw as Record<string, boolean>;
+    if (typeof raw === "string") { try { return JSON.parse(raw) ?? {}; } catch { return {}; } }
+    return {};
+  }
+
+  const faqs = parseArr<{ question: string; answer: string }>(page.faqs);
+  const uniquePoints = parseArr<string>(campsite.uniquePoints);
+  const facilities = parseObj(campsite.facilities);
   const facilityLabels = Object.entries(facilities).filter(([, v]) => v).map(([k]) => k);
-  const nearbySpots = (campsite.nearbyTourSpots as { name: string; type?: string; distance?: number }[] | null) ?? [];
-  const internalLinks = (page.internalLinks as { href: string; label: string }[] | null) ?? [];
+  const nearbySpots = parseArr<{ name: string; type?: string; distance?: number }>(campsite.nearbyTourSpots);
+  const internalLinks = parseArr<{ href: string; label: string }>(page.internalLinks);
   const chabakTrust = campsite.chabakTrustLevel as ChabakTrust;
 
   const heroGradient = campsite.isChabak
