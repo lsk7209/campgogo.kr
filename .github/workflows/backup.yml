@@ -1,0 +1,35 @@
+name: backup
+
+on:
+  schedule:
+    - cron: "0 15 * * *"   # 매일 00:00 KST
+  workflow_dispatch:
+
+jobs:
+  backup:
+    name: Turso DB 백업
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+      TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+      R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx tsx scripts/backup-db.ts
+      - name: Notify on failure
+        if: failure()
+        run: |
+          if [ -n "${{ secrets.SLACK_WEBHOOK }}" ]; then
+            curl -X POST ${{ secrets.SLACK_WEBHOOK }} \
+              -H 'Content-Type: application/json' \
+              -d "{\"text\":\"❌ backup 실패: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
+          fi

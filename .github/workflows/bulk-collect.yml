@@ -1,0 +1,43 @@
+name: bulk-collect
+
+on:
+  schedule:
+    - cron: "0 0 * * 1"   # 매주 월요일 09:00 KST
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (데이터 저장 안 함)"
+        type: boolean
+        default: false
+
+jobs:
+  collect:
+    name: 고캠핑 전체 수집
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+      TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+      GOCAMPING_API_KEY: ${{ secrets.GOCAMPING_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Run collect
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            npx tsx scripts/collect-bulk.ts --dry-run
+          else
+            npx tsx scripts/collect-bulk.ts
+          fi
+      - name: Notify on failure
+        if: failure()
+        run: |
+          if [ -n "${{ secrets.SLACK_WEBHOOK }}" ]; then
+            curl -X POST ${{ secrets.SLACK_WEBHOOK }} \
+              -H 'Content-Type: application/json' \
+              -d "{\"text\":\"❌ bulk-collect 실패: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
+          fi
