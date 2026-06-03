@@ -1,26 +1,180 @@
-@import "tailwindcss";
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css");
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Brand: Forest */
+  --color-forest-900: #1B3328;
+  --color-forest-800: #244033;
+  --color-forest-700: #2D4A3E;
+  --color-forest-600: #3A5C4D;
+  --color-forest-500: #4C7361;
+  --color-forest-400: #6E9586;
+  --color-forest-300: #9EBCB1;
+  --color-forest-200: #C9DAD3;
+  --color-forest-100: #E5EEEA;
+  --color-forest-50: #F1F7F4;
+  /* Brand: Sunset */
+  --color-sunset-700: #B5612F;
+  --color-sunset-600: #C9763E;
+  --color-sunset-500: #D88758;
+  --color-sunset-200: #F3DAC8;
+  --color-sunset-100: #FAEDE3;
+  /* Brand: Sky */
+  --color-sky-700: #4E7799;
+  --color-sky-500: #7BA3C7;
+  --color-sky-200: #D2E2EE;
+  --color-sky-100: #E7F0F6;
+  /* Brand: Soil */
+  --color-soil-700: #6E5736;
+  --color-soil-600: #876B45;
+  --color-soil-500: #8B6F47;
+  --color-soil-200: #E0D4C2;
+  --color-soil-100: #EFE7DA;
+  /* Neutral: Birch + Gray */
+  --color-birch: #F5EFE5;
+  --color-gray-50: #FAF8F4;
+  --color-gray-100: #F2EFE9;
+  --color-gray-200: #E4DFD6;
+  --color-gray-300: #CFC8BB;
+  --color-gray-400: #A89F8F;
+  --color-gray-500: #807868;
+  --color-gray-600: #5E574B;
+  --color-gray-700: #453F36;
+  --color-gray-800: #2E2A24;
+  --color-gray-900: #1C1A16;
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  /* Fonts */
+  --font-ko: "Pretendard Variable", Pretendard, -apple-system, system-ui, sans-serif;
+  --font-en: "Inter", var(--font-ko);
+  /* Shadcn mappings */
+  --color-background: var(--color-birch);
+  --color-foreground: var(--color-gray-800);
+  --color-border: var(--color-gray-200);
+  --color-ring: var(--color-forest-200);
+  --color-primary: var(--color-forest-700);
+  --color-primary-foreground: #ffffff;
+  --color-muted: var(--color-gray-100);
+  --color-muted-foreground: var(--color-gray-500);
+  --color-card: #ffffff;
+  --color-card-foreground: var(--color-gray-800);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ── Static page prose ── */
+.prose-campgogo h2 {
+  font-size: 20px; font-weight: 700; color: var(--color-forest-800);
+  margin: 36px 0 12px; letter-spacing: -0.01em;
+}
+.prose-campgogo h3 {
+  font-size: 17px; font-weight: 700; color: var(--color-gray-800);
+  margin: 28px 0 10px;
+}
+.prose-campgogo p {
+  font-size: 15px; line-height: 1.8; color: var(--color-gray-700);
+  margin-bottom: 16px;
+}
+.prose-campgogo ul, .prose-campgogo ol {
+  padding-left: 20px; margin-bottom: 16px;
+}
+.prose-campgogo li {
+  font-size: 15px; line-height: 1.8; color: var(--color-gray-700); margin-bottom: 6px;
+}
+.prose-campgogo a {
+  color: var(--color-forest-600); text-decoration: underline;
+}
+.prose-campgogo strong { color: var(--color-gray-800); }
+.prose-campgogo .notice-box {
+  background: var(--color-forest-50); border: 1px solid var(--color-forest-200);
+  border-radius: var(--radius-md); padding: 16px 18px; margin: 20px 0;
+  font-size: 14px; color: var(--color-forest-700); line-height: 1.7;
+}
+.prose-campgogo table {
+  width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px;
+}
+.prose-campgogo th {
+  background: var(--color-gray-100); font-weight: 700; padding: 10px 14px;
+  text-align: left; border: 1px solid var(--color-gray-200); color: var(--color-gray-700);
+}
+.prose-campgogo td {
+  padding: 10px 14px; border: 1px solid var(--color-gray-200); color: var(--color-gray-700);
+  vertical-align: top;
+}
+
+/* ── Responsive grid helpers ── */
+.featured-grid {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 56px;
+}
+.featured-hero { grid-row: 1 / 3; }
+
+.grid4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.side-card-grid {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  height: 100%;
+}
+
+.news-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  align-items: center;
+}
+
+.footer-top-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 32px;
+}
+
+@media (max-width: 880px) {
+  .featured-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
   }
+  .featured-hero { grid-row: auto; }
+  .grid4 { grid-template-columns: repeat(2, 1fr); }
+  .news-grid { grid-template-columns: 1fr; padding: 32px 28px; }
+  .footer-top-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  .grid4 { grid-template-columns: 1fr; }
+  .side-card-grid { grid-template-columns: 120px 1fr; }
+  .footer-top-grid { grid-template-columns: 1fr; }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border outline-ring/50 box-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: var(--font-ko);
+    background: var(--color-birch);
+    color: var(--color-gray-800);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  a {
+    color: inherit;
+  }
 }

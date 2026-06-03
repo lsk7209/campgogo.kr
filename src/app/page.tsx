@@ -1,65 +1,75 @@
-import Image from "next/image";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: "캠핑고고 — 예약 앱이 못 보여주는 야영지",
+  description:
+    "공공·저렴·차박 가능 야영지를 찾아주는 사이트. 무료 노지부터 차박 합법성 확인까지.",
+};
+
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <SiteHeader activeNav="/" />
+      <main className="flex-1 flex flex-col items-center justify-center px-6 py-24 text-center">
+        <div
+          className="inline-flex items-center gap-2 text-[13px] font-semibold tracking-[0.04em] uppercase mb-5"
+          style={{ color: "var(--color-forest-600)" }}
+        >
+          <span
+            className="inline-block w-[22px]"
+            style={{ height: "1.5px", background: "var(--color-sunset-500)" }}
+          />
+          캠핑고고
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        <h1
+          className="font-extrabold tracking-[-0.02em] leading-[1.2] mb-6 max-w-[700px]"
+          style={{
+            fontSize: "clamp(32px, 5vw, 52px)",
+            color: "var(--color-forest-800)",
+          }}
+        >
+          예약 앱이 못 보여주는
+          <br />
+          야영지를 찾아드립니다
+        </h1>
+        <p
+          className="text-[18px] leading-[1.75] max-w-[520px] mb-10"
+          style={{ color: "var(--color-gray-600)" }}
+        >
+          공공·저렴·차박 야영지. 후기 커뮤니티도, 실시간 예약도 아닙니다.
+          정확한 정보와 합법성 확인에 집중합니다.
+        </p>
+        <div className="flex flex-wrap gap-3 justify-center">
+          <Link
+            href="/match"
+            className="font-semibold text-[15px] px-6 py-3 rounded-lg text-white transition-colors"
+            style={{ background: "var(--color-forest-700)" }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            내 조건으로 찾기 →
+          </Link>
+          <Link
+            href="/blog"
+            className="font-semibold text-[15px] px-6 py-3 rounded-lg border transition-colors"
+            style={{
+              background: "#fff",
+              color: "var(--color-forest-700)",
+              borderColor: "var(--color-forest-300)",
+            }}
           >
-            Documentation
-          </a>
+            가이드 & 블로그
+          </Link>
         </div>
+        <p
+          className="mt-16 text-[13px]"
+          style={{ color: "var(--color-gray-400)" }}
+        >
+          🚧 현재 개발 중 — 서비스 준비 중입니다
+        </p>
       </main>
-    </div>
+      <SiteFooter />
+    </>
   );
 }
