@@ -1,5 +1,10 @@
 const BASE_URL = "https://campgogo.kr";
 
+// HTML script 태그 내 안전한 JSON 직렬화 (</script> XSS 방지)
+export function safeJsonLd(data: Record<string, unknown>): string {
+  return JSON.stringify(data).replace(/</g, "\\u003c").replace(/>/g, "\\u003e").replace(/&/g, "\\u0026");
+}
+
 export function buildArticleJsonLd(params: {
   title: string;
   description: string;

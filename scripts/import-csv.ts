@@ -171,8 +171,8 @@ async function main() {
   console.log(`\n✅ 완료: ${inserted}건 삽입, ${skipped}건 스킵`);
 
   // 통계
-  const stats = await db.execute("SELECT COUNT(*) as cnt FROM campsites");
-  console.log(`📊 DB 총 야영장: ${(stats.rows[0] as { cnt: number }).cnt}건`);
+  const countRows = await db.select({ id: campsites.id }).from(campsites);
+  console.log(`📊 DB 총 야영장: ${countRows.length}건`);
 }
 
 main().catch((e) => {
