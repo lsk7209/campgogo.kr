@@ -1,7 +1,7 @@
 export async function fetchWithRetry(
   url: string | URL,
   options?: RequestInit,
-  maxRetries = 3
+  maxRetries = 3,
 ): Promise<Response> {
   let lastErr: unknown;
   for (let attempt = 0; attempt < maxRetries; attempt++) {

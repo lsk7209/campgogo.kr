@@ -59,15 +59,17 @@ export class GoCampingClient {
   constructor(private readonly apiKey: string) {}
 
   async fetchPage(pageNo: number, numOfRows = 100) {
-    const url = new URL(`${BASE}/basedList`);
-    url.searchParams.set("serviceKey", this.apiKey);
-    url.searchParams.set("numOfRows", String(numOfRows));
-    url.searchParams.set("pageNo", String(pageNo));
-    url.searchParams.set("MobileOS", "ETC");
-    url.searchParams.set("MobileApp", "CampgogoKR");
-    url.searchParams.set("_type", "json");
+    // data.go.kr는 인코딩된 키를 그대로 전달해야 함 — URLSearchParams 사용 시 이중 인코딩 발생
+    const params = new URLSearchParams({
+      numOfRows: String(numOfRows),
+      pageNo: String(pageNo),
+      MobileOS: "ETC",
+      MobileApp: "CampgogoKR",
+      _type: "json",
+    });
+    const rawUrl = `${BASE}/basedList?serviceKey=${this.apiKey}&${params.toString()}`;
 
-    const res = await fetchWithRetry(url);
+    const res = await fetchWithRetry(rawUrl);
     const json = await parseJsonWithEucKrFallback(res) as { response: { header: { resultCode: string; resultMsg: string }; body: unknown } };
 
     const { header, body } = json.response;
