@@ -24,18 +24,8 @@ async function getPageWithCampsite(slug: string) {
   return result[0] ?? null;
 }
 
-export async function generateStaticParams() {
-  try {
-    const rows = await db
-      .select({ slug: pages.slug, sido: pages.sido, gungu: pages.gungu })
-      .from(pages).where(eq(pages.status, "published")).limit(200);
-    return rows.map((r) => ({
-      sido: encodeURIComponent(r.sido ?? "기타"),
-      gungu: encodeURIComponent(r.gungu ?? "기타"),
-      slug: r.slug,
-    }));
-  } catch { return []; }
-}
+// generateStaticParams 제거 — Windows 한국어 경로 정적 빌드 오류 방지
+// Vercel 배포 환경에서는 ISR (dynamicParams=true)로 정상 동작
 
 export async function generateMetadata({ params }: { params: Promise<{ sido: string; gungu: string; slug: string }> }): Promise<Metadata> {
   const { slug } = await params;

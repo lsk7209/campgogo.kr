@@ -7,10 +7,10 @@ interface SiteHeaderProps {
 
 const navLinks = [
   { href: "/match", label: "매칭" },
-  { href: "/map", label: "지도" },
-  { href: "/theme", label: "테마" },
-  { href: "/season", label: "시즌" },
-  { href: "/guide", label: "가이드" },
+  { href: "/지도", label: "지도" },
+  { href: "/테마", label: "테마" },
+  { href: "/시즌", label: "시즌" },
+  { href: "/지역/경기", label: "지역" },
   { href: "/blog", label: "블로그" },
 ];
 

@@ -17,7 +17,8 @@ export const metadata: Metadata = {
     template: "%s | 캠핑고고",
   },
   description:
-    "공공·저렴·차박 가능 야영지를 찾아주는 사이트. 예약 앱에 없는 한적한 노지·차박지를 정확한 정보와 합법성 확인과 함께.",
+    "예약 앱이 못 보여주는 공공·저렴·차박 야영지 8,000곳+. 합법성 확인, 지역·테마·시즌별 탐색.",
+  metadataBase: new URL("https://campgogo.kr"),
   verification: {
     google: "N12Qd6VwYpWpSnc1j6ennbIK4E5ptRq4JMN8KL8Yr4M",
     other: {
