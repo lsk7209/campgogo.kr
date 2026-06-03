@@ -48,6 +48,11 @@ const ItemSchema = z.object({
 
 export type GoCampingItem = z.infer<typeof ItemSchema>;
 
+export function parseGoCampingItem(raw: unknown): GoCampingItem | null {
+  const result = ItemSchema.safeParse(raw);
+  return result.success ? result.data : null;
+}
+
 const BodySchema = z.object({
   items: z.object({ item: z.array(z.unknown()) }).optional(),
   totalCount: z.number(),
