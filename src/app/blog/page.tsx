@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { db } from "@/lib/db/client";
 import { blogPosts } from "@/lib/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and, lte } from "drizzle-orm";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
@@ -15,10 +15,21 @@ export const metadata: Metadata = {
 };
 
 const CATEGORY_COLORS: Record<string, { bg: string; color: string; border: string }> = {
-  "차박 가이드": { bg: "var(--color-forest-100)", color: "var(--color-forest-700)", border: "var(--color-forest-200)" },
-  "시즌 추천":   { bg: "var(--color-sunset-100)", color: "var(--color-sunset-700)", border: "var(--color-sunset-200)" },
-  "데이터 · 정책": { bg: "var(--color-sky-100)",  color: "var(--color-sky-700)",    border: "var(--color-sky-200)"    },
-  "공공 야영지":  { bg: "var(--color-soil-100)",  color: "var(--color-soil-700)",   border: "var(--color-soil-200)"  },
+  "차박 가이드":    { bg: "var(--color-forest-100)", color: "var(--color-forest-700)", border: "var(--color-forest-200)" },
+  "시즌 추천":      { bg: "var(--color-sunset-100)", color: "var(--color-sunset-700)", border: "var(--color-sunset-200)" },
+  "데이터·정책":   { bg: "var(--color-sky-100)",    color: "var(--color-sky-700)",    border: "var(--color-sky-200)"    },
+  "데이터 · 정책": { bg: "var(--color-sky-100)",    color: "var(--color-sky-700)",    border: "var(--color-sky-200)"    },
+  "공공 야영지":    { bg: "var(--color-soil-100)",   color: "var(--color-soil-700)",   border: "var(--color-soil-200)"  },
+  "캠핑 요리·식단":   { bg: "#FEF3C7", color: "#92400E", border: "#FDE68A" },
+  "텐트·타프·침낭":   { bg: "#EDE9FE", color: "#5B21B6", border: "#DDD6FE" },
+  "가족·어린이 캠핑": { bg: "#FCE7F3", color: "#9D174D", border: "#FBCFE8" },
+  "반려동물 캠핑":     { bg: "#D1FAE5", color: "#065F46", border: "#A7F3D0" },
+  "글램핑·카라반":     { bg: "#FEE2E2", color: "#991B1B", border: "#FECACA" },
+  "백패킹·트레킹":     { bg: "#E0F2FE", color: "#075985", border: "#BAE6FD" },
+  "캠핑 장비":         { bg: "#F3F4F6", color: "#374151", border: "#D1D5DB" },
+  "캠핑 준비·장비":    { bg: "#F3F4F6", color: "#374151", border: "#D1D5DB" },
+  "캠핑 안전·의료":    { bg: "#FEF2F2", color: "#7F1D1D", border: "#FECACA" },
+  "캠핑 문화·환경":    { bg: "#ECFDF5", color: "#065F46", border: "#A7F3D0" },
 };
 
 const THUMB_GRADIENT: Record<string, string> = {
@@ -75,7 +86,11 @@ function PostCard({ post, featured = false }: { post: Post; featured?: boolean }
   );
 }
 
-const CATEGORIES = ["전체", "차박 가이드", "시즌 추천", "데이터 · 정책"];
+const CATEGORIES = [
+  "전체", "차박 가이드", "시즌 추천", "데이터·정책", "공공 야영지",
+  "캠핑 요리·식단", "텐트·타프·침낭", "가족·어린이 캠핑", "반려동물 캠핑",
+  "글램핑·카라반", "백패킹·트레킹", "캠핑 장비",
+];
 
 export default async function BlogPage() {
   let dbPosts: Post[] = [];
@@ -84,7 +99,9 @@ export default async function BlogPage() {
       slug: blogPosts.slug, title: blogPosts.title, metaDescription: blogPosts.metaDescription,
       category: blogPosts.category, datePublished: blogPosts.datePublished,
       wordCount: blogPosts.wordCount,
-    }).from(blogPosts).where(eq(blogPosts.status, "published")).orderBy(desc(blogPosts.publishedAt)).limit(60);
+    }).from(blogPosts)
+      .where(and(eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date())))
+      .orderBy(desc(blogPosts.publishedAt)).limit(60);
 
     const CAT_THUMB: Record<string, string> = {
       "차박 가이드": "forest", "시즌 추천": "sunset",

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { desc, eq, and } from "drizzle-orm";
+import { desc, eq, and, lte } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { blogPosts } from "@/lib/db/schema";
 import { SiteHeader } from "@/components/site-header";
@@ -72,7 +72,8 @@ export default async function BlogCategoryPage({
       .where(
         and(
           eq(blogPosts.category, decoded),
-          eq(blogPosts.status, "published")
+          eq(blogPosts.status, "published"),
+          lte(blogPosts.publishedAt, new Date())
         )
       )
       .orderBy(desc(blogPosts.publishedAt))
