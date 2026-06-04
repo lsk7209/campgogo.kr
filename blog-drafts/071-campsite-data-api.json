@@ -1,0 +1,37 @@
+{
+  "slug": "campsite-public-data-api-guide",
+  "title": "공공데이터로 야영지 직접 수집 — API 활용 실전",
+  "category": "데이터·정책",
+  "primaryKeyword": "야영지 공공데이터 API",
+  "secondaryKeywords": ["고캠핑 API", "야영지 데이터", "공공데이터포털 야영장", "camping data API"],
+  "metaDescription": "공공데이터포털과 고캠핑 API로 야영지 데이터를 직접 수집하는 방법. API 키 발급부터 데이터 파싱, 야영지 데이터베이스 구축 실전 가이드.",
+  "persona": "analyst",
+  "pattern": "F",
+  "publishOrder": 71,
+  "tags": ["공공데이터", "API", "야영지데이터", "데이터수집"],
+  "wordCount": 2740,
+  "externalSources": [
+    { "name": "공공데이터포털 API 사용 가이드", "url": "https://data.go.kr" },
+    { "name": "한국관광공사 고캠핑 API", "url": "https://www.gocamping.or.kr" }
+  ],
+  "internalLinks": [
+    { "text": "차박 금지 구역 지도 데이터", "href": "/blog/chabak-forbidden-zone-map-data" },
+    { "text": "야영지 요금 데이터 분석", "href": "/blog/campsite-price-change-trend" },
+    { "text": "캠핑고고 데이터 소개", "href": "/about" }
+  ],
+  "faqs": [
+    {
+      "q": "한국관광공사 고캠핑 API는 무료인가요?",
+      "a": "네, 무료입니다. 공공데이터포털(data.go.kr)에서 회원가입 후 '한국관광공사 고캠핑정보 서비스' API 키를 신청하면 됩니다. 일반 API 키는 하루 1,000~10,000건의 호출 한도가 있습니다. 대량 수집이 필요하면 별도 한도 증량 신청이 필요합니다."
+    },
+    {
+      "q": "고캠핑 API로 얼마나 많은 야영지 정보를 얻을 수 있나요?",
+      "a": "2024년 기준 고캠핑 API는 전국 3,000개 이상 등록 야영지 정보를 제공합니다. 야영장명, 주소, 좌표(위도·경도), 시설, 요금, 연락처, 사진 URL 등이 포함됩니다. 전국야영장 표준데이터(data.go.kr)와 함께 사용하면 8,000개 이상의 야영지 데이터를 확보할 수 있습니다."
+    },
+    {
+      "q": "공공 야영지 데이터를 지도에 표시하려면 어떻게 해야 하나요?",
+      "a": "위도·경도 데이터를 기반으로 카카오 지도 API 또는 네이버 지도 API에 마커를 표시하면 됩니다. 두 API 모두 무료 기본 할당량이 있습니다. 좌표가 없는 야영지는 주소를 구글 지오코딩 API로 좌표 변환해 처리할 수 있습니다."
+    }
+  ],
+  "bodyMarkdown": "## 왜 공공데이터로 야영지를 직접 수집하나\n\n기존 야영지 앱이나 사이트의 정보는 특정 업체 제휴 야영장 위주로 편향되는 경우가 있다. 공공데이터는 지자체 신고 기준으로 모든 등록 야영장을 포함하기 때문에, 앱에 없는 공공·무료 야영지 정보를 더 완전하게 얻을 수 있다.\n\n## 주요 공공 야영지 데이터 소스\n\n### 소스 1: 한국관광공사 고캠핑 API\n\n**제공 기관**: 한국관광공사  \n**API 유형**: REST API (JSON)\n**접근 방법**: data.go.kr → '한국관광공사 고캠핑정보 서비스' 검색 → API 키 신청  \n**주요 제공 데이터**:\n- 야영장 기본 정보 (이름, 주소, 전화, 좌표)\n- 야영 사이트 수, 유형\n- 시설 정보 (화장실, 샤워, 취사)\n- 입지 구분 (해변/산/계곡/강/호수)\n- 주요 사진 URL\n\n**엔드포인트 예시**:\n```\nGET https://apis.data.go.kr/B551011/GoCamping/basedList\n  ?serviceKey={API_KEY}\n  &pageNo=1\n  &numOfRows=100\n  &MobileOS=ETC\n  &MobileApp=CampSearch\n  &_type=json\n```\n\n### 소스 2: 전국야영장 표준데이터 (data.go.kr)\n\n**제공 기관**: 행정안전부  \n**형식**: CSV/JSON 정기 업데이트  \n**접근 방법**: data.go.kr → '전국야영장 표준데이터' 검색 → CSV 다운로드  \n**특징**: 고캠핑보다 더 많은 야영장 포함 (지자체 신고 기준)\n\n## API 데이터 수집 절차\n\n### 1단계: API 키 발급\n\n1. data.go.kr 회원가입\n2. '고캠핑정보 서비스' 검색 → '활용 신청'\n3. 신청 완료 후 1~2 영업일 내 API 키 발급\n\n### 2단계: 전체 야영장 목록 수집\n\n```python\nimport requests\nimport json\n\nAPI_KEY = 'YOUR_API_KEY'\nbase_url = 'https://apis.data.go.kr/B551011/GoCamping/basedList'\n\nparams = {\n    'serviceKey': API_KEY,\n    'pageNo': 1,\n    'numOfRows': 100,\n    'MobileOS': 'ETC',\n    'MobileApp': 'CampApp',\n    '_type': 'json'\n}\n\nresponse = requests.get(base_url, params=params)\ndata = response.json()\ntotal_count = data['response']['body']['totalCount']\n```\n\n### 3단계: 페이징 처리\n\n총 야영장 수(totalCount)를 확인 후 100개씩 페이지를 나눠 전체 수집:\n\n```python\ntotal_pages = (total_count // 100) + 1\nall_camps = []\n\nfor page in range(1, total_pages + 1):\n    params['pageNo'] = page\n    response = requests.get(base_url, params=params)\n    items = response.json()['response']['body']['items']['item']\n    all_camps.extend(items)\n```\n\n### 4단계: 데이터 정제\n\n위도·경도 누락, 한글 인코딩, 중복 제거 처리:\n\n```python\n# 좌표가 있는 야영장만 필터링\nvalid_camps = [\n    camp for camp in all_camps \n    if camp.get('mapX') and camp.get('mapY')\n]\n```\n\n## 데이터 활용 방법\n\n수집한 야영지 데이터를 활용하는 방법:\n\n1. **지도 시각화**: 좌표 기반 카카오맵·네이버맵 마커 표시\n2. **조건 검색**: 요금·시설·지역 기준 필터링\n3. **적합도 계산**: 공공·무료·차박 여부 기반 점수 부여\n4. **경로 최적화**: 출발지 기준 근거리 야영지 정렬\n\n캠핑고고(campgogo.kr)는 이 방법으로 수집한 8,000여 개 야영지 데이터를 기반으로 운영된다."
+}

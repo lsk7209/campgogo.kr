@@ -25,6 +25,11 @@ export const metadata: Metadata = {
       "naver-site-verification": "b3fef5d11acaad96058bdede98e2dc745957c8e6",
     },
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "캠핑고고 — 예약 앱이 못 보여주는 야영지",
+    description: "공공·저렴·차박 야영지 8,000곳+. 합법성 확인, 지역·테마·시즌별 탐색.",
+  },
 };
 
 export default function RootLayout({

@@ -5,7 +5,8 @@ import { blogPosts } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { NewsletterForm } from "@/components/blog/newsletter-form";
+
+export const revalidate = 3600; // 1시간 ISR
 
 export const metadata: Metadata = {
   title: "가이드 & 블로그",
@@ -82,7 +83,13 @@ export default async function BlogPage() {
     const rows = await db.select({
       slug: blogPosts.slug, title: blogPosts.title, metaDescription: blogPosts.metaDescription,
       category: blogPosts.category, datePublished: blogPosts.datePublished,
+      wordCount: blogPosts.wordCount,
     }).from(blogPosts).where(eq(blogPosts.status, "published")).orderBy(desc(blogPosts.publishedAt)).limit(60);
+
+    const CAT_THUMB: Record<string, string> = {
+      "차박 가이드": "forest", "시즌 추천": "sunset",
+      "데이터 · 정책": "sky", "공공 야영지": "soil",
+    };
 
     dbPosts = rows.map((r) => ({
       href: `/blog/${r.slug}`,
@@ -90,8 +97,8 @@ export default async function BlogPage() {
       excerpt: r.metaDescription ?? undefined,
       category: r.category,
       date: r.datePublished?.replace(/-/g, ".") ?? "",
-      readTime: "읽기",
-      thumb: "forest",
+      readTime: r.wordCount ? `${Math.ceil(r.wordCount / 200)}분` : "읽기",
+      thumb: CAT_THUMB[r.category] ?? "forest",
     }));
   } catch { /* DB 없을 시 시드 사용 */ }
 
@@ -152,17 +159,7 @@ export default async function BlogPage() {
 
         </div>
 
-        {/* Newsletter */}
-        <div style={{ background: "var(--color-forest-800)", padding: "60px 24px" }}>
-          <div style={{ maxWidth: "560px", margin: "0 auto", textAlign: "center" }}>
-            <div style={{ fontSize: "12px", fontWeight: 700, letterSpacing: "0.08em", color: "var(--color-forest-300)", textTransform: "uppercase", marginBottom: "12px" }}>뉴스레터</div>
-            <h2 style={{ fontSize: "24px", fontWeight: 800, color: "#fff", marginBottom: "10px", letterSpacing: "-0.01em" }}>새 가이드, 이메일로 받기</h2>
-            <p style={{ fontSize: "14.5px", color: "var(--color-forest-200)", marginBottom: "28px", lineHeight: 1.7 }}>
-              월 2회. 새 야영지 추가·법령 변경·시즌 추천을 요약합니다.
-            </p>
-            <NewsletterForm />
-          </div>
-        </div>
+
 
       </main>
       <SiteFooter />

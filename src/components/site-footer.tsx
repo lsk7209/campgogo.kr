@@ -22,11 +22,12 @@ export function SiteFooter() {
 
           {/* Nav */}
           <FooterCol title="둘러보기">
+            <FooterLink href="/캠핑장">전국 야영지</FooterLink>
             <FooterLink href="/match">조건 매칭</FooterLink>
             <FooterLink href="/지도">지도</FooterLink>
             <FooterLink href="/테마">테마별</FooterLink>
             <FooterLink href="/시즌">시즌별</FooterLink>
-            <FooterLink href="/지역/경기">지역별</FooterLink>
+            <FooterLink href="/지역">지역별</FooterLink>
             <FooterLink href="/blog">블로그</FooterLink>
           </FooterCol>
 

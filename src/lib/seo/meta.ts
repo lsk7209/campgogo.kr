@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 const SITE_NAME = "캠핑고고";
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://campgogo.kr";
-const DEFAULT_OG_IMAGE = `${BASE_URL}/og-default.jpg`;
+const DEFAULT_OG_IMAGE = `${BASE_URL}/api/og`;
 
 export function buildCampsiteMeta(campsite: {
   name: string;
@@ -12,7 +12,7 @@ export function buildCampsiteMeta(campsite: {
   price1Night?: number | null;
   isPublic?: boolean | null;
   isChabak?: boolean | null;
-}): Metadata {
+}, pageTitle?: string): Metadata {
   const region = campsite.gungu ? `${campsite.sido} ${campsite.gungu}` : campsite.sido;
   const tags: string[] = [];
   if (campsite.isPublic) tags.push("공공야영지");
@@ -39,6 +39,9 @@ export function buildCampsiteMeta(campsite: {
     .filter(Boolean)
     .join(" ");
 
+  const ogTitle = pageTitle ?? campsite.name;
+  const ogImageUrl = `${BASE_URL}/api/og?title=${encodeURIComponent(ogTitle)}&subtitle=${encodeURIComponent(region + " 야영지")}`;
+
   return {
     title,
     description,
@@ -48,9 +51,9 @@ export function buildCampsiteMeta(campsite: {
       siteName: SITE_NAME,
       locale: "ko_KR",
       type: "website",
-      images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: title }],
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: title }],
     },
-    twitter: { card: "summary_large_image", title, description, images: [DEFAULT_OG_IMAGE] },
+    twitter: { card: "summary_large_image", title, description, images: [ogImageUrl] },
   };
 }
 

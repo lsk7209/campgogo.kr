@@ -9,6 +9,8 @@ const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://campgogo.kr";
 
 const STATIC_PAGES = [
   { path: "/",                    freq: "daily",  pri: "1.0" },
+  { path: "/캠핑장",               freq: "daily",  pri: "0.9" },
+  { path: "/지역",                 freq: "weekly", pri: "0.8" },
   { path: "/match",               freq: "weekly", pri: "0.9" },
   { path: "/지도",                 freq: "weekly", pri: "0.8" },
   { path: "/blog",                freq: "daily",  pri: "0.9" },

@@ -6,11 +6,12 @@ interface SiteHeaderProps {
 }
 
 const navLinks = [
+  { href: "/캠핑장", label: "캠핑장" },
   { href: "/match", label: "매칭" },
   { href: "/지도", label: "지도" },
   { href: "/테마", label: "테마" },
   { href: "/시즌", label: "시즌" },
-  { href: "/지역/경기", label: "지역" },
+  { href: "/지역", label: "지역" },
   { href: "/blog", label: "블로그" },
 ];
 

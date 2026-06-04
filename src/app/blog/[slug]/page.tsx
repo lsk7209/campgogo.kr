@@ -11,6 +11,7 @@ import { buildBlogMeta } from "@/lib/seo/meta";
 import { buildArticleJsonLd, buildBreadcrumbJsonLd, buildFAQJsonLd, safeJsonLd } from "@/lib/seo/json-ld";
 
 export const revalidate = 604800;
+export const dynamicParams = true; // DB에 추가된 새 글 바로 접근 가능
 
 export async function generateStaticParams() {
   try {
