@@ -35,6 +35,7 @@ export default function RootLayout({
   return (
     <html lang="ko" className={`${inter.variable} h-full antialiased`}>
       <head>
+        <link rel="alternate" type="application/rss+xml" title="캠핑고고 블로그" href="/feed.xml" />
         {/* Google Analytics 4 */}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}
