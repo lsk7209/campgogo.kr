@@ -1,8 +1,9 @@
 {
   "framework": "nextjs",
   "crons": [
-    { "path": "/api/cron/publish", "schedule": "0 21 * * *" },
-    { "path": "/api/cron/collect-incremental", "schedule": "0 0 * * *" },
-    { "path": "/api/cron/refresh-json", "schedule": "0 18 * * *" }
+    { "path": "/api/cron/enrich-ai",          "schedule": "0 */3 * * *" },
+    { "path": "/api/cron/publish",             "schedule": "0 21 * * *"  },
+    { "path": "/api/cron/collect-incremental", "schedule": "0 0 * * *"   },
+    { "path": "/api/cron/refresh-json",        "schedule": "0 18 * * *"  }
   ]
 }
