@@ -1,0 +1,69 @@
+import { db } from "@/lib/db/client";
+import { blogPosts } from "@/lib/db/schema";
+import { and, eq, gte, lte } from "drizzle-orm";
+
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
+const SITE = "campgogo.kr";
+const INDEXNOW_KEY = process.env.INDEXNOW_KEY ?? "9c8b7a6e5f4d3c2b";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://campgogo.kr";
+
+async function submitIndexNow(urls: string[]) {
+  if (urls.length === 0) return { ok: true, count: 0 };
+  try {
+    const res = await fetch("https://api.indexnow.org/indexnow", {
+      method: "POST",
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify({
+        host: SITE,
+        key: INDEXNOW_KEY,
+        keyLocation: `${SITE_URL}/${INDEXNOW_KEY}.txt`,
+        urlList: urls,
+      }),
+    });
+    return { ok: res.ok, status: res.status, count: urls.length };
+  } catch (err) {
+    return { ok: false, error: String(err), count: 0 };
+  }
+}
+
+export async function GET(req: Request) {
+  const authHeader = req.headers.get("authorization");
+  if (!authHeader || authHeader !== `Bearer ${process.env.CRON_SECRET ?? ""}`) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const now = new Date();
+  // 최근 6시간 내 공개된 글 (cron 5시간 주기 + 1시간 여유)
+  const sixHoursAgo = new Date(now.getTime() - 6 * 60 * 60 * 1000);
+
+  try {
+    const newPosts = await db
+      .select({ slug: blogPosts.slug })
+      .from(blogPosts)
+      .where(
+        and(
+          eq(blogPosts.status, "published"),
+          lte(blogPosts.publishedAt, now),
+          gte(blogPosts.publishedAt, sixHoursAgo)
+        )
+      );
+
+    if (newPosts.length === 0) {
+      return Response.json({ submitted: 0, message: "새로 공개된 글 없음" });
+    }
+
+    const urls = newPosts.map((p) => `${SITE_URL}/blog/${p.slug}`);
+    const result = await submitIndexNow(urls);
+
+    return Response.json({
+      submitted: result.count,
+      indexNow: result,
+      slugs: newPosts.map((p) => p.slug),
+    });
+  } catch (err) {
+    console.error("publish-blog cron error:", err);
+    return Response.json({ error: String(err) }, { status: 500 });
+  }
+}
