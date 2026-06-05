@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { CampingLogo } from "./camping-logo";
 
@@ -20,6 +20,18 @@ const navLinks = [
 
 export function SiteHeader({ activeNav }: SiteHeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    setIsDark(document.documentElement.classList.contains("dark"));
+  }, []);
+
+  function toggleDark() {
+    const next = !isDark;
+    setIsDark(next);
+    document.documentElement.classList.toggle("dark", next);
+    try { localStorage.setItem("cg-theme", next ? "dark" : "light"); } catch {}
+  }
 
   return (
     <>
@@ -74,6 +86,19 @@ export function SiteHeader({ activeNav }: SiteHeaderProps) {
             >
               내 조건으로 찾기
             </Link>
+            <button
+              onClick={toggleDark}
+              aria-label={isDark ? "라이트 모드로 전환" : "다크 모드로 전환"}
+              title={isDark ? "라이트 모드" : "다크 모드"}
+              className="border rounded-lg px-2.5 py-2 text-[15px] transition-colors"
+              style={{
+                borderColor: "var(--color-gray-300)",
+                color: "var(--color-gray-700)",
+                background: "transparent",
+              }}
+            >
+              {isDark ? "☀" : "☽"}
+            </button>
           </div>
 
           <button

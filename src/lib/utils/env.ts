@@ -26,7 +26,6 @@ const envSchema = z.object({
   R2_ENDPOINT: z.string().optional(),
 
   // 사이트
-  NEXT_PUBLIC_GA4_ID: z.string().optional(),
   SITE_URL: z.string().url().default("http://localhost:3000"),
   SITE_NAME: z.string().default("캠핑고고"),
 

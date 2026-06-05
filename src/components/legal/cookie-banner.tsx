@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 
 const CONSENT_KEY = "cg-cookie-consent";
+const GA4_ID = "G-1E6KZFZNS6";
 
 type Consent = "accepted" | "rejected" | null;
 
@@ -35,7 +36,7 @@ export function CookieBanner() {
   useEffect(() => {
     const stored = localStorage.getItem(CONSENT_KEY) as Consent | null;
     if (stored === "accepted") {
-      const gaId = process.env.NEXT_PUBLIC_GA4_ID;
+      const gaId = GA4_ID;
       if (gaId) loadGA4(gaId);
     }
     if (!stored) {
@@ -50,7 +51,7 @@ export function CookieBanner() {
     localStorage.setItem(CONSENT_KEY, "accepted");
     setConsent("accepted");
     setVisible(false);
-    const gaId = process.env.NEXT_PUBLIC_GA4_ID;
+    const gaId = GA4_ID;
     if (gaId) loadGA4(gaId);
   }
 

@@ -66,6 +66,30 @@
   --color-card-foreground: var(--color-gray-800);
 }
 
+/* ── Dark mode ── */
+html.dark {
+  color-scheme: dark;
+  --color-birch: #1a201c;
+  --color-gray-50:  #1e2420;
+  --color-gray-100: #252c28;
+  --color-gray-200: #313d37;
+  --color-gray-300: #4a5a52;
+  --color-gray-400: #6a7c72;
+  --color-gray-500: #8a9e94;
+  --color-gray-600: #aabdb3;
+  --color-gray-700: #c8d6ce;
+  --color-gray-800: #e0eae4;
+  --color-gray-900: #f0f5f2;
+  --color-background: #1a201c;
+  --color-foreground: #e0eae4;
+  --color-border:     #313d37;
+  --color-card:       #222b26;
+  --color-card-foreground: #e0eae4;
+  --color-muted:      #252c28;
+  --color-muted-foreground: #8a9e94;
+  --color-ring:       var(--color-forest-400);
+}
+
 /* ── Static page prose ── */
 .prose-campgogo h2 {
   font-size: 20px; font-weight: 700; color: var(--color-forest-800);

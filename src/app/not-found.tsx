@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NotFoundSearch } from "@/components/not-found-search";
 
 export default function NotFound() {
   return (
@@ -73,8 +74,11 @@ export default function NotFound() {
         요청하신 주소가 삭제되었거나 잘못 입력되었을 수 있습니다.
       </p>
 
+      {/* Search box */}
+      <NotFoundSearch />
+
       {/* Helpful links */}
-      <nav aria-label="주요 메뉴">
+      <nav aria-label="주요 메뉴" style={{ marginTop: "24px" }}>
         <ul
           style={{
             listStyle: "none",

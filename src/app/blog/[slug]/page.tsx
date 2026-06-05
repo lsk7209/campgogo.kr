@@ -9,6 +9,8 @@ import { AuthorLabel } from "@/components/legal/author-label";
 import { AffiliateDisclosure } from "@/components/legal/affiliate-disclosure";
 import { buildBlogMeta } from "@/lib/seo/meta";
 import { buildArticleJsonLd, buildBreadcrumbJsonLd, buildFAQJsonLd, safeJsonLd } from "@/lib/seo/json-ld";
+import { TocSidebar } from "@/components/blog/toc-sidebar";
+import type { TocItem } from "@/components/blog/toc-sidebar";
 
 export const revalidate = 604800;
 export const dynamicParams = true; // DB에 추가된 새 글 바로 접근 가능
@@ -39,8 +41,6 @@ function slugify(text: string): string {
     .trim()
     .replace(/\s+/g, "-") || "section";
 }
-
-type TocItem = { id: string; text: string; level: 2 | 3 };
 
 function extractToc(markdown: string): TocItem[] {
   const toc: TocItem[] = [];
@@ -97,26 +97,6 @@ function markdownToHtml(md: string): string {
   html = html.replace(/(<\/[hul][^>]*>)<\/p>/g, "$1");
 
   return html;
-}
-
-// ── TOC 사이드바 컴포넌트 ─────────────────────────────────
-function TocSidebar({ items }: { items: TocItem[] }) {
-  if (items.length === 0) return null;
-  return (
-    <nav className="toc-sidebar" aria-label="목차">
-      <div style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--color-gray-400)", marginBottom: "12px" }}>목차</div>
-      <ol style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "2px" }}>
-        {items.map((item) => (
-          <li key={item.id} style={{ paddingLeft: item.level === 3 ? "12px" : "0" }}>
-            <a href={`#${item.id}`} style={{ fontSize: item.level === 3 ? "12.5px" : "13px", color: "var(--color-gray-600)", textDecoration: "none", lineHeight: 1.6, display: "block", padding: "3px 0", borderLeft: item.level === 2 ? "2px solid var(--color-forest-200)" : "2px solid transparent", paddingLeft: item.level === 2 ? "10px" : "22px", transition: "color 120ms, border-color 120ms" }}
-              className="toc-link">
-              {item.text}
-            </a>
-          </li>
-        ))}
-      </ol>
-    </nav>
-  );
 }
 
 // ── TOC 모바일 (접기) ─────────────────────────────────────
