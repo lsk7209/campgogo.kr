@@ -1,12 +1,14 @@
 import { db } from "@/lib/db/client";
 import { pages } from "@/lib/db/schema";
 import { eq, isNull, and } from "drizzle-orm";
+import { getGscAccessToken, hasGscCredentials } from "@/lib/gsc/auth";
 
 export const runtime = "nodejs";
 
 const SITE = "campgogo.kr";
 const INDEXNOW_KEY = process.env.INDEXNOW_KEY ?? "";
 const SITE_URL = process.env.SITE_URL ?? "https://campgogo.kr";
+const GSC_SITE = encodeURIComponent(`https://${SITE}/`);
 
 async function submitIndexNow(urls: string[]) {
   if (urls.length === 0) return;
@@ -21,9 +23,19 @@ async function submitIndexNow(urls: string[]) {
         urlList: urls,
       }),
     });
-  } catch {
-    // IndexNow 실패는 무시 (비필수)
-  }
+  } catch { /* IndexNow 실패는 무시 */ }
+}
+
+async function pingGscSitemap() {
+  if (!hasGscCredentials()) return;
+  try {
+    const token = await getGscAccessToken();
+    const sitemapUrl = encodeURIComponent(`${SITE_URL}/sitemap.xml`);
+    await fetch(`https://www.googleapis.com/webmasters/v3/sites/${GSC_SITE}/sitemaps/${sitemapUrl}`, {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch { /* GSC 실패는 무시 */ }
 }
 
 export async function GET(req: Request) {
@@ -58,8 +70,9 @@ export async function GET(req: Request) {
       }
     }
 
-    // IndexNow 자동 전송 (Bing, Yandex 등)
+    // IndexNow + GSC 사이트맵 자동 전송
     await submitIndexNow(publishedUrls);
+    await pingGscSitemap();
 
     return Response.json({ published: ids.length, ids, indexNow: publishedUrls.length });
   } catch (err) {

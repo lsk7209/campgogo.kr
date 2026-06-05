@@ -1,6 +1,7 @@
 import { db } from "@/lib/db/client";
 import { blogPosts } from "@/lib/db/schema";
 import { and, eq, gte, lte } from "drizzle-orm";
+import { getGscAccessToken, hasGscCredentials } from "@/lib/gsc/auth";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -8,6 +9,7 @@ export const maxDuration = 60;
 const SITE = "campgogo.kr";
 const INDEXNOW_KEY = process.env.INDEXNOW_KEY ?? "";
 const SITE_URL = process.env.SITE_URL ?? "https://campgogo.kr";
+const GSC_SITE = encodeURIComponent(`https://${SITE}/`);
 
 async function submitIndexNow(urls: string[]) {
   if (urls.length === 0) return { ok: true, count: 0 };
@@ -26,6 +28,18 @@ async function submitIndexNow(urls: string[]) {
   } catch (err) {
     return { ok: false, error: String(err), count: 0 };
   }
+}
+
+async function pingGscSitemap() {
+  if (!hasGscCredentials()) return;
+  try {
+    const token = await getGscAccessToken();
+    const sitemapUrl = encodeURIComponent(`${SITE_URL}/sitemap.xml`);
+    await fetch(`https://www.googleapis.com/webmasters/v3/sites/${GSC_SITE}/sitemaps/${sitemapUrl}`, {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch { /* GSC 실패는 무시 */ }
 }
 
 export async function GET(req: Request) {
@@ -57,6 +71,7 @@ export async function GET(req: Request) {
 
     const urls = newPosts.map((p) => `${SITE_URL}/blog/${p.slug}`);
     const result = await submitIndexNow(urls);
+    await pingGscSitemap();
 
     return Response.json({
       submitted: result.count,

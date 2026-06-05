@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { eq } from "drizzle-orm";
+import { eq, and, ne, desc } from "drizzle-orm";
+import Link from "next/link";
 import { db } from "@/lib/db/client";
 import { blogPosts } from "@/lib/db/schema";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { AuthorLabel } from "@/components/legal/author-label";
 import { AffiliateDisclosure } from "@/components/legal/affiliate-disclosure";
+import { BlogAd } from "@/components/blog/blog-ad";
 import { buildBlogMeta } from "@/lib/seo/meta";
 import { buildArticleJsonLd, buildBreadcrumbJsonLd, buildFAQJsonLd, safeJsonLd } from "@/lib/seo/json-ld";
 import { TocSidebar } from "@/components/blog/toc-sidebar";
@@ -132,6 +134,19 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
   const faqs = (post.faqs as { q: string; a: string }[] | null) ?? [];
   const sources = (post.externalSources as { name: string; url: string }[] | null) ?? [];
+
+  // 관련글: 같은 카테고리, 최신 3편
+  let relatedPosts: { slug: string; title: string; category: string; datePublished: string | null; wordCount: number | null }[] = [];
+  try {
+    relatedPosts = await db.select({
+      slug: blogPosts.slug, title: blogPosts.title,
+      category: blogPosts.category, datePublished: blogPosts.datePublished,
+      wordCount: blogPosts.wordCount,
+    }).from(blogPosts)
+      .where(and(eq(blogPosts.status, "published"), eq(blogPosts.category, post.category), ne(blogPosts.slug, slug)))
+      .orderBy(desc(blogPosts.publishedAt))
+      .limit(3);
+  } catch { /* ignore */ }
   const authorName = post.persona ? (PERSONA_NAME[post.persona] ?? "캠핑고고 편집팀") : "캠핑고고 편집팀";
   const BASE_URL = process.env.SITE_URL ?? "https://campgogo.kr";
   const url = `${BASE_URL}/blog/${post.slug}`;
@@ -166,7 +181,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             <h1 style={{ fontSize: "clamp(22px, 4vw, 34px)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.3, color: "var(--color-forest-800)", margin: "0 0 18px", maxWidth: "720px" }}>
               {post.title}
             </h1>
-            <AuthorLabel persona={post.persona} datePublished={post.datePublished} dateModified={post.dateModified} />
+            <AuthorLabel persona={post.persona} datePublished={post.datePublished} dateModified={post.dateModified} wordCount={post.wordCount} />
           </div>
         </div>
 
@@ -183,6 +198,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
             {/* Mobile TOC */}
             <TocMobile items={toc} />
+
+            {/* 인라인 광고 (요약 아래) */}
+            <BlogAd />
 
             {post.bodyMarkdown ? (
               <div className="prose-campgogo" dangerouslySetInnerHTML={{ __html: sanitizeHtml(markdownToHtml(post.bodyMarkdown)) }} />
@@ -228,8 +246,30 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               본 블로그의 정보는 작성 시점의 공공데이터·공지·법령을 기준으로 합니다. 방문·차박 전 반드시 관할 지자체 또는 관리 기관에 최종 확인 바랍니다.
             </div>
 
-            <div style={{ marginTop: "32px", paddingTop: "24px", borderTop: "1px solid var(--color-gray-200)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
-              <a href="/blog" style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-forest-600)", textDecoration: "none", display: "flex", alignItems: "center", gap: "6px" }}>
+            {/* 관련 글 */}
+            {relatedPosts.length > 0 && (
+              <section style={{ marginTop: "48px" }}>
+                <h3 style={{ fontSize: "15px", fontWeight: 700, color: "var(--color-gray-700)", marginBottom: "16px", letterSpacing: "-0.01em" }}>
+                  같은 카테고리 글
+                </h3>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                  {relatedPosts.map((r) => (
+                    <Link key={r.slug} href={`/blog/${r.slug}`} style={{ display: "flex", flexDirection: "column", gap: "3px", padding: "14px 16px", background: "var(--color-gray-50)", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-200)", textDecoration: "none", transition: "background 120ms" }}>
+                      <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-gray-900)", lineHeight: 1.4 }}>{r.title}</span>
+                      <span style={{ fontSize: "12px", color: "var(--color-gray-400)" }}>
+                        {r.datePublished?.replace(/-/g, ".")} · {r.wordCount ? `${Math.max(1, Math.ceil(r.wordCount / 200))}분` : ""}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* 하단 인라인 광고 */}
+            <BlogAd />
+
+            <div style={{ marginTop: "28px", paddingTop: "20px", borderTop: "1px solid var(--color-gray-200)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
+              <a href="/blog" style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-forest-600)", textDecoration: "none" }}>
                 ← 블로그 목록
               </a>
               <a href="/match" style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-gray-500)", textDecoration: "none" }}>
