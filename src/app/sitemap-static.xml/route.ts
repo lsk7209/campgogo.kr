@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 86400; // 하루 캐시 (정적 데이터)
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://campgogo.kr";
+const SITE = process.env.SITE_URL ?? "https://campgogo.kr";
 
 const STATIC_PAGES = [
   { path: "/",                 freq: "daily",   pri: "1.0" },

@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 export const dynamic = "force-dynamic";
 export const revalidate = 3600;
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://campgogo.kr";
+const SITE = process.env.SITE_URL ?? "https://campgogo.kr";
 
 function esc(s: string) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

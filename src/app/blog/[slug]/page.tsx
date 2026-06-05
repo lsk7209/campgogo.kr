@@ -153,7 +153,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const faqs = (post.faqs as { q: string; a: string }[] | null) ?? [];
   const sources = (post.externalSources as { name: string; url: string }[] | null) ?? [];
   const authorName = post.persona ? (PERSONA_NAME[post.persona] ?? "캠핑고고 편집팀") : "캠핑고고 편집팀";
-  const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://campgogo.kr";
+  const BASE_URL = process.env.SITE_URL ?? "https://campgogo.kr";
   const url = `${BASE_URL}/blog/${post.slug}`;
 
   const toc = post.bodyMarkdown ? extractToc(post.bodyMarkdown) : [];

@@ -52,7 +52,7 @@
   --radius-xl: 16px;
   /* Fonts */
   --font-ko: "Pretendard Variable", Pretendard, -apple-system, system-ui, sans-serif;
-  --font-en: "Inter", var(--font-ko);
+  --font-en: var(--font-ko);
   /* Shadcn mappings */
   --color-background: var(--color-birch);
   --color-foreground: var(--color-gray-800);

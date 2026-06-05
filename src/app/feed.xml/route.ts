@@ -5,7 +5,7 @@ import { eq, desc } from "drizzle-orm";
 export const dynamic = "force-dynamic";
 export const revalidate = 3600;
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://campgogo.kr";
+const SITE = process.env.SITE_URL ?? "https://campgogo.kr";
 const SITE_NAME = "캠핑고고";
 const SITE_DESC = "예약 앱이 못 보여주는 공공·저렴·차박 야영지 가이드";
 

@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://campgogo.kr";
+const BASE_URL = process.env.SITE_URL ?? "https://campgogo.kr";
 
 // HTML script 태그 내 안전한 JSON 직렬화 (</script> XSS 방지)
 export function safeJsonLd(data: Record<string, unknown>): string {

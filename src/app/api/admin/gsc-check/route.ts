@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 
 import { getGscAccessToken, hasGscCredentials } from "@/lib/gsc/auth";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://campgogo.kr";
+const SITE_URL = process.env.SITE_URL ?? "https://campgogo.kr";
 
 export async function GET(req: Request) {
   const adminToken = process.env.ADMIN_API_TOKEN;

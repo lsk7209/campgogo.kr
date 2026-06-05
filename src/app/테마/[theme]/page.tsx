@@ -12,7 +12,7 @@ import type { ChabakTrust } from "@/lib/curation/chabak-trust";
 export const revalidate = 86400;
 export const dynamicParams = true;
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://campgogo.kr";
+const BASE_URL = process.env.SITE_URL ?? "https://campgogo.kr";
 
 // ----------------------------------------------------------------
 // 테마 정의

@@ -23,7 +23,7 @@ import type { ChabakTrust } from "@/lib/curation/chabak-trust";
 export const revalidate = 604800;
 export const dynamicParams = true;
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://campgogo.kr";
+const BASE_URL = process.env.SITE_URL ?? "https://campgogo.kr";
 
 // FAQ는 Gemini가 {q, a}로 반환
 type Faq = { q: string; a: string } | { question: string; answer: string };

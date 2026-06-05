@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 const SITE_NAME = "캠핑고고";
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://campgogo.kr";
+const BASE_URL = process.env.SITE_URL ?? "https://campgogo.kr";
 const DEFAULT_OG_IMAGE = `${BASE_URL}/api/og`;
 
 export function buildCampsiteMeta(campsite: {

@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 
 const SITE = "campgogo.kr";
 const INDEXNOW_KEY = process.env.INDEXNOW_KEY ?? "";
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://campgogo.kr";
+const SITE_URL = process.env.SITE_URL ?? "https://campgogo.kr";
 
 async function submitIndexNow(urls: string[]) {
   if (urls.length === 0) return;

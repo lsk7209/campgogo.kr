@@ -28,7 +28,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { category } = await params;
   const decoded = decodeURIComponent(category);
-  const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://campgogo.kr";
+  const BASE_URL = process.env.SITE_URL ?? "https://campgogo.kr";
   const title = `${decoded} 블로그 | 캠핑고고`;
   const description = `캠핑고고 블로그 ${decoded} 카테고리 — 공공·차박·가성비 야영지 관련 글 모음.`;
   const canonical = `${BASE_URL}/blog/category/${encodeURIComponent(decoded)}`;

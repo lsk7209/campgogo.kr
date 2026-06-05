@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 3600;
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://campgogo.kr";
+const SITE = process.env.SITE_URL ?? "https://campgogo.kr";
 
 const SITEMAPS = [
   { loc: `${SITE}/sitemap-static.xml` },
