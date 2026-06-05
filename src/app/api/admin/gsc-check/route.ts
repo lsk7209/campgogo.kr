@@ -1,11 +1,17 @@
-// GSC 사이트맵 상태 확인 및 제출
-// 서비스 계정(id-ai-179@cursorai-451704.iam.gserviceaccount.com)이
-// Google Search Console 속성 소유자로 추가되어야 합니다.
+// GSC 사이트맵 상태 확인 및 일괄 제출
+// 서비스 계정이 GSC 속성 소유자로 등록되어 있어야 합니다.
 export const runtime = "nodejs";
 
 import { getGscAccessToken, hasGscCredentials } from "@/lib/gsc/auth";
 
 const SITE_URL = process.env.SITE_URL ?? "https://campgogo.kr";
+
+const SITEMAPS = [
+  `${SITE_URL}/sitemap.xml`,
+  `${SITE_URL}/sitemap-static.xml`,
+  `${SITE_URL}/sitemap-blog.xml`,
+  `${SITE_URL}/sitemap-campsites.xml`,
+];
 
 export async function GET(req: Request) {
   const adminToken = process.env.ADMIN_API_TOKEN;
@@ -19,21 +25,32 @@ export async function GET(req: Request) {
 
   try {
     const accessToken = await getGscAccessToken();
-    const siteUrl = encodeURIComponent(SITE_URL + "/");
+    const encodedSite = encodeURIComponent(`${SITE_URL}/`);
 
+    // 현재 제출된 사이트맵 목록 조회
     const listRes = await fetch(
-      `https://www.googleapis.com/webmasters/v3/sites/${siteUrl}/sitemaps`,
+      `https://www.googleapis.com/webmasters/v3/sites/${encodedSite}/sitemaps`,
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );
-    const listData = await listRes.json() as { sitemap?: { path: string; lastSubmitted: string; isPending: boolean; isSitemapsIndex: boolean; lastDownloaded: string; warnings: number; errors: number }[] };
+    const listData = await listRes.json() as {
+      sitemap?: { path: string; lastSubmitted: string; isPending: boolean; isSitemapsIndex: boolean; errors: number }[]
+    };
 
-    const sitemapPath = `${SITE_URL}/sitemap.xml`;
-    await fetch(
-      `https://www.googleapis.com/webmasters/v3/sites/${siteUrl}/sitemaps/${encodeURIComponent(sitemapPath)}`,
-      { method: "PUT", headers: { Authorization: `Bearer ${accessToken}` } }
-    );
+    // 서브 사이트맵 포함 전체 제출
+    const submitResults: { url: string; status: number }[] = [];
+    for (const sm of SITEMAPS) {
+      const res = await fetch(
+        `https://www.googleapis.com/webmasters/v3/sites/${encodedSite}/sitemaps/${encodeURIComponent(sm)}`,
+        { method: "PUT", headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+      submitResults.push({ url: sm, status: res.status });
+    }
 
-    return Response.json({ ok: true, sitemaps: listData.sitemap ?? [], submitted: sitemapPath });
+    return Response.json({
+      ok: true,
+      submitted: submitResults,
+      existing: listData.sitemap ?? [],
+    });
   } catch (err) {
     return Response.json({ error: String(err) }, { status: 500 });
   }

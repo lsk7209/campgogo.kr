@@ -30,11 +30,13 @@ async function pingGscSitemap() {
   if (!hasGscCredentials()) return;
   try {
     const token = await getGscAccessToken();
-    const sitemapUrl = encodeURIComponent(`${SITE_URL}/sitemap.xml`);
-    await fetch(`https://www.googleapis.com/webmasters/v3/sites/${GSC_SITE}/sitemaps/${sitemapUrl}`, {
-      method: "PUT",
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    // sitemap index + 정적 페이지 서브 사이트맵 함께 제출
+    for (const sm of [`${SITE_URL}/sitemap.xml`, `${SITE_URL}/sitemap-static.xml`]) {
+      await fetch(`https://www.googleapis.com/webmasters/v3/sites/${GSC_SITE}/sitemaps/${encodeURIComponent(sm)}`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    }
   } catch { /* GSC 실패는 무시 */ }
 }
 
