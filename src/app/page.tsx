@@ -8,7 +8,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { CampsiteCard } from "@/components/campsite/campsite-card";
 import type { ChabakTrust } from "@/lib/curation/chabak-trust";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 function parsePhotos(raw: unknown): { url: string }[] {
   if (Array.isArray(raw)) return raw as { url: string }[];

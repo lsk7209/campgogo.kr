@@ -49,6 +49,8 @@ export function buildLocalBusinessJsonLd(params: {
   lng: number;
   phone?: string;
   url: string;
+  description?: string;
+  image?: string;
 }): Record<string, unknown> {
   const result: Record<string, unknown> = {
     "@context": "https://schema.org",
@@ -59,6 +61,8 @@ export function buildLocalBusinessJsonLd(params: {
     url: params.url,
   };
   if (params.phone) result.telephone = params.phone;
+  if (params.description) result.description = params.description;
+  if (params.image) result.image = params.image;
   return result;
 }
 

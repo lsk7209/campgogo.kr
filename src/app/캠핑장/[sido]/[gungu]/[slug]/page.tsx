@@ -13,7 +13,7 @@ import { ConditionBadges } from "@/components/campsite/condition-badges";
 import { ReportButton } from "@/components/campsite/report-button";
 import {
   buildBreadcrumbJsonLd,
-  buildPlaceJsonLd,
+  buildLocalBusinessJsonLd,
   buildFAQJsonLd,
   safeJsonLd,
 } from "@/lib/seo/json-ld";
@@ -130,7 +130,7 @@ export default async function CampsitePage({
 
   const placeJsonLd =
     campsite.lat && campsite.lng
-      ? buildPlaceJsonLd({
+      ? buildLocalBusinessJsonLd({
           name: campsite.name,
           description: page?.metaDescription ?? undefined,
           address: campsite.address ?? `${campsite.sido} ${campsite.gungu ?? ""}`,
