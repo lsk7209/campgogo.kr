@@ -22,9 +22,13 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const post = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug)).get();
-  if (!post) return { title: "블로그 | 캠핑고고" };
-  return buildBlogMeta({ title: post.title, slug: post.slug, metaDescription: post.metaDescription, datePublished: post.datePublished });
+  try {
+    const post = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug)).get();
+    if (!post) return { title: "블로그 | 캠핑고고" };
+    return buildBlogMeta({ title: post.title, slug: post.slug, metaDescription: post.metaDescription, datePublished: post.datePublished });
+  } catch {
+    return { title: "블로그 | 캠핑고고" };
+  }
 }
 
 // ── TOC 추출 ─────────────────────────────────────────────

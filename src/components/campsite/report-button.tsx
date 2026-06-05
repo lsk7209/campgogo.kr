@@ -31,7 +31,12 @@ export function ReportButton({ campsiteId, campsiteName }: ReportButtonProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ campsiteId, reportType: type, content, reporterEmail: email || undefined }),
       });
-      setStatus(res.ok ? "done" : "error");
+      if (res.ok) {
+        setStatus("done");
+        setTimeout(() => setOpen(false), 2500);
+      } else {
+        setStatus("error");
+      }
     } catch {
       setStatus("error");
     }

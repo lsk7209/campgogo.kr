@@ -75,7 +75,12 @@ export async function generateMetadata({
   params: Promise<{ sido: string; gungu: string; slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const campsite = await getCampsite(decodeURIComponent(slug));
+  let campsite: Awaited<ReturnType<typeof getCampsite>>;
+  try {
+    campsite = await getCampsite(decodeURIComponent(slug));
+  } catch {
+    return { title: "캠핑장 정보 | 캠핑고고" };
+  }
   if (!campsite) return { title: "캠핑장 정보 | 캠핑고고" };
 
   const meta = buildCampsiteMeta(campsite);

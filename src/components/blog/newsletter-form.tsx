@@ -71,7 +71,7 @@ export function NewsletterForm() {
           style={{ accentColor: "var(--color-sunset-500)" }}
         />
         <span>
-          (선택) 광고성 정보 수신에 동의합니다. 제휴·이벤트 소식이 포함될 수
+          <strong>(필수)</strong> 광고성 정보 수신에 동의합니다. 제휴·이벤트 소식이 포함될 수
           있으며, 동의 일자는 자동 기록됩니다.
         </span>
       </label>

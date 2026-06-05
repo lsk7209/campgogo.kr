@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { db } from "@/lib/db/client";
 import { blogPosts } from "@/lib/db/schema";
-import { eq, desc, and, lte } from "drizzle-orm";
+import { eq, desc, and, lte, count } from "drizzle-orm";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
-export const revalidate = 3600; // 1시간 ISR
+export const dynamic = "force-dynamic"; // searchParams 페이지네이션
+
+const PAGE_SIZE = 60;
 
 export const metadata: Metadata = {
   title: "가이드 & 블로그",
@@ -92,16 +94,29 @@ const CATEGORIES = [
   "글램핑·카라반", "백패킹·트레킹", "캠핑 장비",
 ];
 
-export default async function BlogPage() {
+export default async function BlogPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+  const { page: pageParam } = await searchParams;
+  const currentPage = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
+  const offset = (currentPage - 1) * PAGE_SIZE;
+
   let dbPosts: Post[] = [];
+  let totalCount = 0;
   try {
+    const [{ value: total }] = await db
+      .select({ value: count() })
+      .from(blogPosts)
+      .where(and(eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date())));
+    totalCount = total;
+
     const rows = await db.select({
       slug: blogPosts.slug, title: blogPosts.title, metaDescription: blogPosts.metaDescription,
       category: blogPosts.category, datePublished: blogPosts.datePublished,
       wordCount: blogPosts.wordCount,
     }).from(blogPosts)
       .where(and(eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date())))
-      .orderBy(desc(blogPosts.publishedAt)).limit(200);
+      .orderBy(desc(blogPosts.publishedAt))
+      .limit(PAGE_SIZE)
+      .offset(offset);
 
     const CAT_THUMB: Record<string, string> = {
       "차박 가이드": "forest", "시즌 추천": "sunset",
@@ -120,6 +135,7 @@ export default async function BlogPage() {
   } catch { /* DB 없을 시 시드 사용 */ }
 
   const posts = dbPosts.length > 0 ? dbPosts : SEED_POSTS;
+  const totalPages = Math.max(1, Math.ceil((totalCount || posts.length) / PAGE_SIZE));
   const [featured, ...rest] = posts;
 
   return (
@@ -172,8 +188,39 @@ export default async function BlogPage() {
 
           {/* Card grid */}
           <div className="blog-grid">
-            {rest.slice(2).map((p, i) => <PostCard key={i} post={p} />)}
+            {rest.slice(currentPage === 1 ? 2 : 0).map((p, i) => <PostCard key={i} post={p} />)}
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <nav aria-label="페이지 탐색" style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", marginTop: "48px", flexWrap: "wrap" }}>
+              {currentPage > 1 && (
+                <Link href={currentPage === 2 ? "/blog" : `/blog?page=${currentPage - 1}`}
+                  style={{ padding: "8px 18px", borderRadius: "8px", border: "1px solid var(--color-gray-300)", fontSize: "14px", fontWeight: 600, color: "var(--color-gray-700)", textDecoration: "none", background: "#fff" }}>
+                  ← 이전
+                </Link>
+              )}
+              {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                const p = i + 1;
+                return (
+                  <Link key={p} href={p === 1 ? "/blog" : `/blog?page=${p}`}
+                    aria-current={p === currentPage ? "page" : undefined}
+                    style={{ padding: "8px 14px", borderRadius: "8px", border: "1px solid", fontSize: "14px", fontWeight: 600, textDecoration: "none",
+                      borderColor: p === currentPage ? "var(--color-forest-600)" : "var(--color-gray-300)",
+                      background: p === currentPage ? "var(--color-forest-600)" : "#fff",
+                      color: p === currentPage ? "#fff" : "var(--color-gray-700)" }}>
+                    {p}
+                  </Link>
+                );
+              })}
+              {currentPage < totalPages && (
+                <Link href={`/blog?page=${currentPage + 1}`}
+                  style={{ padding: "8px 18px", borderRadius: "8px", border: "1px solid var(--color-gray-300)", fontSize: "14px", fontWeight: 600, color: "var(--color-gray-700)", textDecoration: "none", background: "#fff" }}>
+                  다음 →
+                </Link>
+              )}
+            </nav>
+          )}
 
         </div>
 
