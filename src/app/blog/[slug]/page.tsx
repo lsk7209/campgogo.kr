@@ -56,7 +56,7 @@ function markdownToHtml(md: string): string {
   // Headings with id
   html = html.replace(/^### (.+)$/gm, (_, t) => `<h3 id="${slugify(t)}">${t}</h3>`);
   html = html.replace(/^## (.+)$/gm, (_, t) => `<h2 id="${slugify(t)}">${t}</h2>`);
-  html = html.replace(/^# (.+)$/gm, (_, t) => `<h2 id="${slugify(t)}">${t}</h2>`);
+  html = html.replace(/^# (.+)$/gm, (_, t) => `<h1 id="${slugify(t)}">${t}</h1>`);
 
   // Inline
   html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");

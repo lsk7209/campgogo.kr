@@ -41,8 +41,13 @@ export default function RootLayout({
     <html lang="ko" className={`${inter.variable} h-full antialiased`}>
       <head>
         <link rel="alternate" type="application/rss+xml" title="캠핑고고 블로그" href="/feed.xml" />
-        <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
+        {/* Pretendard: <link>로 교체해 CSS @import 체인 제거 */}
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css"
+        />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
       </head>
       <body className="min-h-full flex flex-col">

@@ -15,6 +15,13 @@ const nextConfig: NextConfig = {
         source: "/(.*)",
         headers: securityHeaders,
       },
+      {
+        // matching-data.json은 daily cron으로 갱신 → 6시간 캐시
+        source: "/matching-data.json",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=21600, stale-while-revalidate=86400" },
+        ],
+      },
     ];
   },
 };

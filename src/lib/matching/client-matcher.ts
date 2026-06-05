@@ -17,7 +17,7 @@ export const CITY_COORDS: Record<string, { lat: number; lng: number }> = {
 let cache: CampsiteMatchData[] | null = null;
 async function loadData(): Promise<CampsiteMatchData[]> {
   if (cache) return cache;
-  const res = await fetch("/matching-data.json", { cache: "no-store" });
+  const res = await fetch("/matching-data.json");
   if (!res.ok) throw new Error("매칭 데이터 로드 실패: " + res.status);
   cache = (await res.json()) as CampsiteMatchData[];
   return cache;
