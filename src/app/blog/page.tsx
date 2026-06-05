@@ -101,7 +101,7 @@ export default async function BlogPage() {
       wordCount: blogPosts.wordCount,
     }).from(blogPosts)
       .where(and(eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date())))
-      .orderBy(desc(blogPosts.publishedAt)).limit(60);
+      .orderBy(desc(blogPosts.publishedAt)).limit(200);
 
     const CAT_THUMB: Record<string, string> = {
       "차박 가이드": "forest", "시즌 추천": "sunset",
@@ -142,7 +142,8 @@ export default async function BlogPage() {
             {/* Category pills */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
               {CATEGORIES.map((c) => (
-                <span key={c} style={{ fontSize: "13px", fontWeight: 600, padding: "5px 14px", borderRadius: "999px", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", color: "#fff", cursor: "default" }}>{c}</span>
+                <Link key={c} href={c === "전체" ? "/blog" : `/blog/category/${encodeURIComponent(c)}`}
+                  style={{ fontSize: "13px", fontWeight: 600, padding: "5px 14px", borderRadius: "999px", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", color: "#fff", textDecoration: "none" }}>{c}</Link>
               ))}
               <a href="/feed.xml" target="_blank" rel="noopener noreferrer" style={{ fontSize: "13px", fontWeight: 600, padding: "5px 14px", borderRadius: "999px", background: "rgba(255,165,0,0.15)", border: "1px solid rgba(255,165,0,0.35)", color: "#FFB347", textDecoration: "none", marginLeft: "auto" }}>RSS</a>
             </div>

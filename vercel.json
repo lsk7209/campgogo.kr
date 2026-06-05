@@ -5,6 +5,7 @@
     { "path": "/api/cron/publish",             "schedule": "0 21 * * *"  },
     { "path": "/api/cron/collect-incremental", "schedule": "0 0 * * *"   },
     { "path": "/api/cron/refresh-json",        "schedule": "0 18 * * *"  },
-    { "path": "/api/cron/publish-blog",        "schedule": "0 */5 * * *" }
+    { "path": "/api/cron/publish-blog",        "schedule": "0 */5 * * *" },
+    { "path": "/api/cron/gsc-submit",          "schedule": "0 22 * * *"  }
   ]
 }
