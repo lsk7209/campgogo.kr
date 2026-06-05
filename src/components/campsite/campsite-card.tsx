@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ConditionBadges } from "./condition-badges";
 import type { ChabakTrust } from "@/lib/curation/chabak-trust";
 
@@ -42,14 +43,19 @@ export function CampsiteCard({ name, sido, gungu, price1Night, isPublic, isFree,
     <Link href={href} style={{ display: "flex", flexDirection: "column", background: "#fff", border: "1px solid var(--color-gray-200)", borderRadius: "var(--radius-lg)", overflow: "hidden", textDecoration: "none", color: "inherit", transition: "transform 120ms ease, box-shadow 120ms ease" }} aria-label={`${name} — ${sido}${gungu ? ` ${gungu}` : ""}`}>
       <div style={{ position: "relative", aspectRatio: "16 / 10", background: firstPhoto ? undefined : thumbGradient, overflow: "hidden" }}>
         {firstPhoto ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={firstPhoto} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading="lazy" />
+          <Image
+            src={firstPhoto}
+            alt={name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            style={{ objectFit: "cover" }}
+          />
         ) : (
           <span style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11.5px", fontWeight: 600, letterSpacing: "0.04em", color: "rgba(255,255,255,0.5)" }} aria-hidden="true">
             [ 사진 없음 ]
           </span>
         )}
-        <span style={{ position: "absolute", top: "10px", left: "10px", padding: "3px 8px", borderRadius: "var(--radius-sm)", background: "rgba(0,0,0,0.45)", color: "#fff", fontSize: "12px", fontWeight: 600, backdropFilter: "blur(4px)" }}>
+        <span style={{ position: "absolute", top: "10px", left: "10px", padding: "3px 8px", borderRadius: "var(--radius-sm)", background: "rgba(0,0,0,0.45)", color: "#fff", fontSize: "12px", fontWeight: 600, backdropFilter: "blur(4px)", zIndex: 1 }}>
           {sido} {gungu}
         </span>
       </div>

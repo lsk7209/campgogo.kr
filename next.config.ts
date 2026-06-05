@@ -10,6 +10,13 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "*.gocamping.or.kr" },
+      { protocol: "http", hostname: "*.gocamping.or.kr" },
+      { protocol: "https", hostname: "gocamping.or.kr" },
+    ],
+  },
   async headers() {
     return [
       {
