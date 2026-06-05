@@ -5,7 +5,7 @@ import { eq, isNull, and } from "drizzle-orm";
 export const runtime = "nodejs";
 
 const SITE = "campgogo.kr";
-const INDEXNOW_KEY = process.env.INDEXNOW_KEY ?? "9c8b7a6e5f4d3c2b";
+const INDEXNOW_KEY = process.env.INDEXNOW_KEY ?? "";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://campgogo.kr";
 
 async function submitIndexNow(urls: string[]) {

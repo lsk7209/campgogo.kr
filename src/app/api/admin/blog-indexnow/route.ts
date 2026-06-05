@@ -6,11 +6,12 @@ export const runtime = "nodejs";
 export const maxDuration = 60;
 
 const SITE = "campgogo.kr";
-const INDEXNOW_KEY = process.env.INDEXNOW_KEY ?? "9c8b7a6e5f4d3c2b";
+const INDEXNOW_KEY = process.env.INDEXNOW_KEY ?? "";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://campgogo.kr";
-const BATCH_SIZE = 500; // IndexNow 권장 배치 크기
+const BATCH_SIZE = 500;
 
 async function submitBatch(urls: string[]): Promise<{ ok: boolean; status?: number }> {
+  if (!INDEXNOW_KEY) return { ok: false };
   const res = await fetch("https://api.indexnow.org/indexnow", {
     method: "POST",
     headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -25,16 +26,16 @@ async function submitBatch(urls: string[]): Promise<{ ok: boolean; status?: numb
 }
 
 export async function GET(req: Request) {
+  const adminToken = process.env.ADMIN_API_TOKEN;
   const authHeader = req.headers.get("authorization");
-  const url = new URL(req.url);
-  const token = url.searchParams.get("token");
 
-  const adminToken = process.env.ADMIN_API_TOKEN ?? "";
-  const isAuth =
-    authHeader === `Bearer ${adminToken}` || token === adminToken;
-
-  if (!adminToken || !isAuth) {
+  // URL query token 제거 — Authorization header만 허용 (로그 노출 방지)
+  if (!adminToken || !authHeader || authHeader !== `Bearer ${adminToken}`) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (!INDEXNOW_KEY) {
+    return Response.json({ error: "INDEXNOW_KEY 환경변수 미설정" }, { status: 500 });
   }
 
   try {
@@ -55,7 +56,6 @@ export async function GET(req: Request) {
 
     const urls = livePosts.map((p) => `${SITE_URL}/blog/${p.slug}`);
 
-    // 배치 단위로 제출
     const results: { batch: number; ok: boolean; status?: number }[] = [];
     for (let i = 0; i < urls.length; i += BATCH_SIZE) {
       const batch = urls.slice(i, i + BATCH_SIZE);

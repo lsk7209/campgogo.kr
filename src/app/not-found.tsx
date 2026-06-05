@@ -88,9 +88,9 @@ export default function NotFound() {
         >
           {[
             { href: "/", label: "홈" },
-            { href: "/match", label: "매칭 도구" },
+            { href: "/match", label: "야영지 찾기" },
+            { href: "/지역", label: "지역별 탐색" },
             { href: "/blog", label: "블로그" },
-            { href: "/지역/경기", label: "지역별 야영지" },
           ].map(({ href, label }) => (
             <li key={href}>
               <Link

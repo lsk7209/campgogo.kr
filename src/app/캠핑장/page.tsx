@@ -78,7 +78,7 @@ export default async function CampsiteIndexPage() {
       .from(campsites)
       .where(isNotNull(campsites.lat))
       .orderBy(desc(campsites.fitScore))
-      .limit(12);
+      .limit(24);
   } catch {
     recent = [];
   }
@@ -261,17 +261,14 @@ export default async function CampsiteIndexPage() {
                 >
                   적합도 높은 야영지
                 </h2>
-                <a
-                  href="/match"
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: 600,
-                    color: "var(--color-forest-600)",
-                    textDecoration: "none",
-                  }}
-                >
-                  내 조건으로 찾기 →
-                </a>
+                <div style={{ display: "flex", gap: "16px" }}>
+                  <a href="/지역" style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-forest-600)", textDecoration: "none" }}>
+                    지역별 전체 보기 →
+                  </a>
+                  <a href="/match" style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-gray-500)", textDecoration: "none" }}>
+                    내 조건으로 찾기 →
+                  </a>
+                </div>
               </div>
               <div className="grid4">
                 {recent.map((c) => {
