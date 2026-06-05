@@ -37,7 +37,7 @@ export async function GET(req: Request) {
         </div>
         <div style={{ fontSize: "26px", opacity: 0.85 }}>{subtitle}</div>
         <div style={{ fontSize: "18px", marginTop: "40px", opacity: 0.6 }}>
-          campgogokr.kr · 예약 앱이 못 보여주는 야영지
+          campgogo.kr · 예약 앱이 못 보여주는 야영지
         </div>
       </div>
     ),

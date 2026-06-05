@@ -12,6 +12,7 @@ export function buildCampsiteMeta(campsite: {
   price1Night?: number | null;
   isPublic?: boolean | null;
   isChabak?: boolean | null;
+  slug?: string | null;
 }, pageTitle?: string): Metadata {
   const region = campsite.gungu ? `${campsite.sido} ${campsite.gungu}` : campsite.sido;
   const tags: string[] = [];
@@ -41,10 +42,12 @@ export function buildCampsiteMeta(campsite: {
 
   const ogTitle = pageTitle ?? campsite.name;
   const ogImageUrl = `${BASE_URL}/api/og?title=${encodeURIComponent(ogTitle)}&subtitle=${encodeURIComponent(region + " 야영지")}`;
+  const canonical = campsite.slug ? `${BASE_URL}/캠핑장/${campsite.slug}` : undefined;
 
   return {
     title,
     description,
+    ...(canonical && { alternates: { canonical } }),
     openGraph: {
       title,
       description,
@@ -59,40 +62,54 @@ export function buildCampsiteMeta(campsite: {
 
 export function buildBlogMeta(post: {
   title: string;
+  slug: string;
   metaDescription?: string | null;
   datePublished?: string | null;
 }): Metadata {
   const title = `${post.title} | ${SITE_NAME}`;
   const description = post.metaDescription ?? `캠핑고고 블로그: ${post.title}. 야영지 정보와 캠핑 팁.`;
+  const canonical = `${BASE_URL}/blog/${post.slug}`;
+  const ogImageUrl = `${BASE_URL}/api/og?title=${encodeURIComponent(post.title)}&subtitle=${encodeURIComponent("캠핑고고 블로그")}`;
+
   return {
     title,
     description,
+    alternates: { canonical },
     openGraph: {
       title,
       description,
       siteName: SITE_NAME,
       locale: "ko_KR",
       type: "article",
-      images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: title }],
+      publishedTime: post.datePublished ?? undefined,
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: title }],
     },
-    twitter: { card: "summary_large_image", title, description, images: [DEFAULT_OG_IMAGE] },
+    twitter: { card: "summary_large_image", title, description, images: [ogImageUrl] },
   };
 }
 
-export function buildRegionMeta(sido: string, count: number): Metadata {
-  const title = `${sido} 야영지 ${count}곳 모음 | ${SITE_NAME}`;
-  const description = `${sido} 지역 야영지 ${count}곳 정보. 공공야영지·차박·저렴한 캠핑장 비교.`;
+export function buildRegionMeta(sido: string, count: number, gungu?: string): Metadata {
+  const regionLabel = gungu ? `${sido} ${gungu}` : sido;
+  const title = `${regionLabel} 야영지 ${count}곳 모음 | ${SITE_NAME}`;
+  const description = `${regionLabel} 지역 야영지 ${count}곳 정보. 공공야영지·차박·저렴한 캠핑장 비교.`;
+  const canonicalPath = gungu
+    ? `/지역/${encodeURIComponent(sido)}/${encodeURIComponent(gungu)}`
+    : `/지역/${encodeURIComponent(sido)}`;
+  const canonical = `${BASE_URL}${canonicalPath}`;
+  const ogImageUrl = `${BASE_URL}/api/og?title=${encodeURIComponent(regionLabel + " 야영지")}&subtitle=${encodeURIComponent(count + "곳 정보")}`;
+
   return {
     title,
     description,
+    alternates: { canonical },
     openGraph: {
       title,
       description,
       siteName: SITE_NAME,
       locale: "ko_KR",
       type: "website",
-      images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: title }],
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: title }],
     },
-    twitter: { card: "summary_large_image", title, description, images: [DEFAULT_OG_IMAGE] },
+    twitter: { card: "summary_large_image", title, description, images: [ogImageUrl] },
   };
 }

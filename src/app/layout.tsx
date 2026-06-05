@@ -41,12 +41,18 @@ export default function RootLayout({
     <html lang="ko" className={`${inter.variable} h-full antialiased`}>
       <head>
         <link rel="alternate" type="application/rss+xml" title="캠핑고고 블로그" href="/feed.xml" />
-        {/* Preconnect */}
         <link rel="preconnect" href="https://cdn.jsdelivr.net" />
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-        {/* AdSense 자동광고 */}
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3050601904412736" crossOrigin="anonymous" />
+      </head>
+      <body className="min-h-full flex flex-col">
+        {children}
+        {/* AdSense — afterInteractive: LCP·TBT 보호 */}
+        <Script
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3050601904412736"
+          strategy="afterInteractive"
+          crossOrigin="anonymous"
+        />
         {/* Google Analytics 4 */}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}
@@ -60,8 +66,7 @@ export default function RootLayout({
             gtag('config', '${GA4_ID}', { anonymize_ip: true });
           `}
         </Script>
-      </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      </body>
     </html>
   );
 }

@@ -15,7 +15,7 @@ export function buildArticleJsonLd(params: {
 }): Record<string, unknown> {
   return {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
     headline: params.title,
     description: params.description,
     datePublished: params.datePublished,

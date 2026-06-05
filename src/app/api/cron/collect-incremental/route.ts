@@ -16,7 +16,8 @@ const MAX_ITEMS_PER_RUN = 200;
 
 export async function GET(req: Request) {
   const authHeader = req.headers.get("authorization");
-  if (!authHeader || authHeader !== `Bearer ${process.env.CRON_SECRET ?? ""}`) {
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret || !authHeader || authHeader !== `Bearer ${cronSecret}`) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 

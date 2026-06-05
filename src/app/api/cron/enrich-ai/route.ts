@@ -28,7 +28,8 @@ async function addSpend(cost: number) {
 
 export async function GET(req: Request) {
   const authHeader = req.headers.get("authorization");
-  if (!authHeader || authHeader !== `Bearer ${process.env.CRON_SECRET ?? ""}`) {
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret || !authHeader || authHeader !== `Bearer ${cronSecret}`) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 

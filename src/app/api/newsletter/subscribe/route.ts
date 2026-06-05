@@ -1,14 +1,18 @@
 import { db } from "@/lib/db/client";
 import { newsletterSubscribers } from "@/lib/db/schema";
 
+const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/;
+
 export async function POST(req: Request) {
   try {
-    const { email, marketingConsent } = await req.json() as {
-      email: string;
-      marketingConsent: boolean;
-    };
+    const body = await req.json() as unknown;
+    if (!body || typeof body !== "object") {
+      return Response.json({ error: "잘못된 요청입니다." }, { status: 400 });
+    }
 
-    if (!email || typeof email !== "string") {
+    const { email, marketingConsent } = body as Record<string, unknown>;
+
+    if (!email || typeof email !== "string" || !EMAIL_RE.test(email) || email.length > 320) {
       return Response.json({ error: "유효한 이메일 주소가 필요합니다." }, { status: 400 });
     }
     if (!marketingConsent) {
@@ -18,7 +22,7 @@ export async function POST(req: Request) {
     await db
       .insert(newsletterSubscribers)
       .values({
-        email,
+        email: email.toLowerCase().trim(),
         marketingConsent: true,
         consentedAt: new Date(),
         status: "subscribed",

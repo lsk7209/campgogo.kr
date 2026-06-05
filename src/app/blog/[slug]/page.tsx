@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const post = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug)).get();
   if (!post) return { title: "블로그 | 캠핑고고" };
-  return buildBlogMeta({ title: post.title, metaDescription: post.metaDescription, datePublished: post.datePublished });
+  return buildBlogMeta({ title: post.title, slug: post.slug, metaDescription: post.metaDescription, datePublished: post.datePublished });
 }
 
 // ── TOC 추출 ─────────────────────────────────────────────

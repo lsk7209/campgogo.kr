@@ -7,6 +7,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { CampsiteCard } from "@/components/campsite/campsite-card";
 import { buildBreadcrumbJsonLd, safeJsonLd } from "@/lib/seo/json-ld";
+import { buildRegionMeta } from "@/lib/seo/meta";
 import type { ChabakTrust } from "@/lib/curation/chabak-trust";
 
 // 요청 시 동적 렌더링 + 24시간 캐시
@@ -19,9 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ sido: str
   const g = decodeURIComponent(gungu);
   const rows = await db.select({ id: campsites.id }).from(campsites)
     .where(and(eq(campsites.sido, s), eq(campsites.gungu, g)));
-  const title = `${s} ${g} 야영지 ${rows.length}곳 | 캠핑고고`;
-  const description = `${s} ${g} 공공·저렴·차박 야영지 ${rows.length}곳 정보. 위치·시설·가격 안내.`;
-  return { title, description, openGraph: { title, description } };
+  return buildRegionMeta(s, rows.length, g);
 }
 
 export default async function GunguPage({ params }: { params: Promise<{ sido: string; gungu: string }> }) {
