@@ -49,6 +49,14 @@ function extractToc(markdown: string): TocItem[] {
   return toc;
 }
 
+// ── XSS 방어: <script>, javascript: URL, on* 이벤트 핸들러 제거 ─
+function sanitizeHtml(html: string): string {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/\bon\w+\s*=/gi, "data-removed=")
+    .replace(/href\s*=\s*["']?\s*javascript:/gi, 'href="about:blank"');
+}
+
 // ── 마크다운 → HTML (heading ID 포함) ────────────────────
 function markdownToHtml(md: string): string {
   let html = md;
@@ -193,7 +201,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             <TocMobile items={toc} />
 
             {post.bodyMarkdown ? (
-              <div className="prose-campgogo" dangerouslySetInnerHTML={{ __html: markdownToHtml(post.bodyMarkdown) }} />
+              <div className="prose-campgogo" dangerouslySetInnerHTML={{ __html: sanitizeHtml(markdownToHtml(post.bodyMarkdown)) }} />
             ) : (
               <div style={{ padding: "48px 24px", textAlign: "center", color: "var(--color-gray-400)" }}>
                 <p style={{ fontSize: "2rem", marginBottom: "12px" }}>✍️</p>

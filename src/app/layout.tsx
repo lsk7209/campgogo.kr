@@ -25,10 +25,20 @@ export const metadata: Metadata = {
       "naver-site-verification": "b3fef5d11acaad96058bdede98e2dc745957c8e6",
     },
   },
+  openGraph: {
+    title: "캠핑고고 — 예약 앱이 못 보여주는 야영지",
+    description: "예약 앱이 못 보여주는 공공·저렴·차박 야영지 8,000곳+. 합법성 확인, 지역·테마·시즌별 탐색.",
+    url: "https://campgogo.kr",
+    siteName: "캠핑고고",
+    locale: "ko_KR",
+    type: "website",
+    images: [{ url: "https://campgogo.kr/api/og", width: 1200, height: 630, alt: "캠핑고고" }],
+  },
   twitter: {
     card: "summary_large_image",
     title: "캠핑고고 — 예약 앱이 못 보여주는 야영지",
     description: "공공·저렴·차박 야영지 8,000곳+. 합법성 확인, 지역·테마·시즌별 탐색.",
+    images: ["https://campgogo.kr/api/og"],
   },
 };
 

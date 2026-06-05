@@ -52,26 +52,22 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
         문제가 발생했습니다
       </h1>
 
-      {error.message && (
-        <p
-          style={{
-            fontSize: "13px",
-            color: "var(--color-gray-500, #6B7280)",
-            background: "var(--color-gray-100, #F3F4F6)",
-            border: "1px solid var(--color-gray-200, #E5E7EB)",
-            borderRadius: "6px",
-            padding: "8px 16px",
-            maxWidth: "480px",
-            wordBreak: "break-all",
-            marginBottom: "28px",
-            fontFamily: "monospace",
-          }}
-        >
-          {error.message}
-        </p>
-      )}
-
-      {!error.message && <div style={{ marginBottom: "28px" }} />}
+      <p
+        style={{
+          fontSize: "14px",
+          color: "var(--color-gray-500, #6B7280)",
+          maxWidth: "380px",
+          marginBottom: "28px",
+          lineHeight: 1.6,
+        }}
+      >
+        일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.
+        {error.digest && (
+          <span style={{ display: "block", marginTop: "6px", fontSize: "12px", color: "var(--color-gray-400, #9CA3AF)" }}>
+            (오류 코드: {error.digest})
+          </span>
+        )}
+      </p>
 
       <div
         style={{
