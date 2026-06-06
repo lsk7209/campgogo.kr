@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { eq, and, ne, desc, lte } from "drizzle-orm";
 import Link from "next/link";
+import { unstable_cache } from "next/cache";
 import { db } from "@/lib/db/client";
 import { blogPosts } from "@/lib/db/schema";
 import { SiteHeader } from "@/components/site-header";
@@ -15,12 +16,42 @@ import { TocSidebar } from "@/components/blog/toc-sidebar";
 import type { TocItem } from "@/components/blog/toc-sidebar";
 
 export const revalidate = 604800;
-export const dynamic = "force-dynamic";
 export const dynamicParams = true; // DB에 추가된 새 글 바로 접근 가능
+
+const getPublishedBlogSlugs = unstable_cache(
+  async () => db.select({ slug: blogPosts.slug })
+    .from(blogPosts)
+    .where(and(eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date())))
+    .limit(200),
+  ["published-blog-slugs"],
+  { revalidate: 300 }
+);
+
+const getBlogPostBySlug = unstable_cache(
+  async (slug: string) => db.select()
+    .from(blogPosts)
+    .where(and(eq(blogPosts.slug, slug), eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date())))
+    .get(),
+  ["blog-post-by-slug"],
+  { revalidate: 300 }
+);
+
+const getRelatedBlogPosts = unstable_cache(
+  async (category: string, slug: string) => db.select({
+    slug: blogPosts.slug, title: blogPosts.title,
+    category: blogPosts.category, datePublished: blogPosts.datePublished,
+    wordCount: blogPosts.wordCount,
+  }).from(blogPosts)
+    .where(and(eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date()), eq(blogPosts.category, category), ne(blogPosts.slug, slug)))
+    .orderBy(desc(blogPosts.publishedAt))
+    .limit(3),
+  ["related-blog-posts"],
+  { revalidate: 300 }
+);
 
 export async function generateStaticParams() {
   try {
-    const rows = await db.select({ slug: blogPosts.slug }).from(blogPosts).where(and(eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date()))).limit(200);
+    const rows = await getPublishedBlogSlugs();
     return rows.map((r) => ({ slug: r.slug }));
   } catch { return []; }
 }
@@ -28,7 +59,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   try {
-    const post = await db.select().from(blogPosts).where(and(eq(blogPosts.slug, slug), eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date()))).get();
+    const post = await getBlogPostBySlug(slug);
     if (!post) return { title: "블로그 | 캠핑고고" };
     return buildBlogMeta({ title: post.title, slug: post.slug, metaDescription: post.metaDescription, datePublished: post.datePublished });
   } catch {
@@ -144,7 +175,7 @@ const PERSONA_NAME: Record<string, string> = {
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = await db.select().from(blogPosts).where(and(eq(blogPosts.slug, slug), eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date()))).get();
+  const post = await getBlogPostBySlug(slug);
   if (!post) notFound();
 
   const faqs = (post.faqs as { q: string; a: string }[] | null) ?? [];
@@ -153,14 +184,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   // 관련글: 같은 카테고리, 최신 3편
   let relatedPosts: { slug: string; title: string; category: string; datePublished: string | null; wordCount: number | null }[] = [];
   try {
-    relatedPosts = await db.select({
-      slug: blogPosts.slug, title: blogPosts.title,
-      category: blogPosts.category, datePublished: blogPosts.datePublished,
-      wordCount: blogPosts.wordCount,
-    }).from(blogPosts)
-      .where(and(eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date()), eq(blogPosts.category, post.category), ne(blogPosts.slug, slug)))
-      .orderBy(desc(blogPosts.publishedAt))
-      .limit(3);
+    relatedPosts = await getRelatedBlogPosts(post.category, slug);
   } catch { /* ignore */ }
   const authorName = post.persona ? (PERSONA_NAME[post.persona] ?? "캠핑고고 편집팀") : "캠핑고고 편집팀";
   const BASE_URL = process.env.SITE_URL ?? "https://campgogo.kr";

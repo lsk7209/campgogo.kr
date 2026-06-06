@@ -3,10 +3,11 @@ import Link from "next/link";
 import { db } from "@/lib/db/client";
 import { blogPosts } from "@/lib/db/schema";
 import { eq, desc, and, lte, count } from "drizzle-orm";
+import { unstable_cache } from "next/cache";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 const PAGE_SIZE = 18; // 카드형 3×N = 18이 자연스럽다
 
 export const metadata: Metadata = {
@@ -74,6 +75,30 @@ const SEED_POSTS: Post[] = [
   { href: "/blog/car-setup-by-type", title: "SUV·경차별 차박 셋업 — 내 차에 맞는 평탄화", excerpt: "차종별 적재 공간과 평탄화 매트 조합. 무리한 장비 없이 하룻밤 편하게.", category: "차박 가이드", date: "2026.05.20", readMin: 8, persona: "saver", thumb: "forest" },
   { href: "/blog/june-valley-free-sites", title: "6월 계곡 노지 베스트 — 물놀이 가능한 무료 사이트", excerpt: "초여름 수온과 그늘을 함께 고려한 지역별 추천.", category: "시즌 추천", date: "2026.05.29", readMin: 7, persona: "traveler", thumb: "sunset" },
 ];
+
+const getBlogPageData = unstable_cache(
+  async (offset: number) => {
+    const [{ value: total }] = await db
+      .select({ value: count() })
+      .from(blogPosts)
+      .where(and(eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date())));
+
+    const rows = await db.select({
+      slug: blogPosts.slug, title: blogPosts.title,
+      metaDescription: blogPosts.metaDescription, category: blogPosts.category,
+      datePublished: blogPosts.datePublished, wordCount: blogPosts.wordCount,
+      persona: blogPosts.persona,
+    }).from(blogPosts)
+      .where(and(eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date())))
+      .orderBy(desc(blogPosts.publishedAt))
+      .limit(PAGE_SIZE)
+      .offset(offset);
+
+    return { total, rows };
+  },
+  ["blog-page-data"],
+  { revalidate: 300 }
+);
 
 function CategoryBadge({ category }: { category: string }) {
   const c = CATEGORY_COLORS[category] ?? DEFAULT_CAT;
@@ -163,22 +188,8 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
   let dbPosts: Post[] = [];
   let totalCount = 0;
   try {
-    const [{ value: total }] = await db
-      .select({ value: count() })
-      .from(blogPosts)
-      .where(and(eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date())));
+    const { total, rows } = await getBlogPageData(offset);
     totalCount = total;
-
-    const rows = await db.select({
-      slug: blogPosts.slug, title: blogPosts.title,
-      metaDescription: blogPosts.metaDescription, category: blogPosts.category,
-      datePublished: blogPosts.datePublished, wordCount: blogPosts.wordCount,
-      persona: blogPosts.persona,
-    }).from(blogPosts)
-      .where(and(eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date())))
-      .orderBy(desc(blogPosts.publishedAt))
-      .limit(PAGE_SIZE)
-      .offset(offset);
 
     dbPosts = rows.map((r) => ({
       href: `/blog/${r.slug}`,
