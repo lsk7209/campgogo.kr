@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { eq, and, ne, desc } from "drizzle-orm";
+import { eq, and, ne, desc, lte } from "drizzle-orm";
 import Link from "next/link";
 import { db } from "@/lib/db/client";
 import { blogPosts } from "@/lib/db/schema";
@@ -15,11 +15,12 @@ import { TocSidebar } from "@/components/blog/toc-sidebar";
 import type { TocItem } from "@/components/blog/toc-sidebar";
 
 export const revalidate = 604800;
+export const dynamic = "force-dynamic";
 export const dynamicParams = true; // DB에 추가된 새 글 바로 접근 가능
 
 export async function generateStaticParams() {
   try {
-    const rows = await db.select({ slug: blogPosts.slug }).from(blogPosts).where(eq(blogPosts.status, "published")).limit(200);
+    const rows = await db.select({ slug: blogPosts.slug }).from(blogPosts).where(and(eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date()))).limit(200);
     return rows.map((r) => ({ slug: r.slug }));
   } catch { return []; }
 }
@@ -27,7 +28,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   try {
-    const post = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug)).get();
+    const post = await db.select().from(blogPosts).where(and(eq(blogPosts.slug, slug), eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date()))).get();
     if (!post) return { title: "블로그 | 캠핑고고" };
     return buildBlogMeta({ title: post.title, slug: post.slug, metaDescription: post.metaDescription, datePublished: post.datePublished });
   } catch {
@@ -129,8 +130,8 @@ const PERSONA_NAME: Record<string, string> = {
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug)).get();
-  if (!post || post.status !== "published") notFound();
+  const post = await db.select().from(blogPosts).where(and(eq(blogPosts.slug, slug), eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date()))).get();
+  if (!post) notFound();
 
   const faqs = (post.faqs as { q: string; a: string }[] | null) ?? [];
   const sources = (post.externalSources as { name: string; url: string }[] | null) ?? [];
@@ -143,7 +144,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       category: blogPosts.category, datePublished: blogPosts.datePublished,
       wordCount: blogPosts.wordCount,
     }).from(blogPosts)
-      .where(and(eq(blogPosts.status, "published"), eq(blogPosts.category, post.category), ne(blogPosts.slug, slug)))
+      .where(and(eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date()), eq(blogPosts.category, post.category), ne(blogPosts.slug, slug)))
       .orderBy(desc(blogPosts.publishedAt))
       .limit(3);
   } catch { /* ignore */ }

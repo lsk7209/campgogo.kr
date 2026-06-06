@@ -1,6 +1,6 @@
 import { db } from "@/lib/db/client";
 import { blogPosts } from "@/lib/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { and, desc, eq, lte } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 3600;
@@ -65,7 +65,7 @@ export async function GET(): Promise<Response> {
         dateModified: blogPosts.dateModified,
       })
       .from(blogPosts)
-      .where(eq(blogPosts.status, "published"))
+      .where(and(eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date())))
       .orderBy(desc(blogPosts.publishedAt))
       .limit(50);
   } catch { /* DB 없을 시 시드 사용 */ }

@@ -1,7 +1,7 @@
 import { db } from "@/lib/db/client";
 import { blogPosts } from "@/lib/db/schema";
 import { cleanSitemapLoc, siteUrl } from "@/lib/seo/site-url";
-import { eq } from "drizzle-orm";
+import { and, eq, lte } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 3600;
@@ -22,7 +22,7 @@ export async function GET(): Promise<Response> {
     const posts = await db
       .select({ slug: blogPosts.slug, dateModified: blogPosts.dateModified, updatedAt: blogPosts.updatedAt })
       .from(blogPosts)
-      .where(eq(blogPosts.status, "published"));
+      .where(and(eq(blogPosts.status, "published"), lte(blogPosts.publishedAt, new Date())));
 
     for (const p of posts) {
       const lastmod = p.dateModified ?? (p.updatedAt ? p.updatedAt.toISOString().slice(0, 10) : today);
