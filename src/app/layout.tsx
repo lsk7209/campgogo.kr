@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     template: "%s | 캠핑고고",
   },
   description:
-    "예약 앱이 못 보여주는 공공·저렴·차박 야영지 8,000곳+. 합법성 확인, 지역·테마·시즌별 탐색.",
+    "예약 앱이 놓치기 쉬운 공공·저렴·차박 야영지 8,000곳+. 합법성 확인과 지역·테마·시즌별 탐색을 제공합니다.",
   metadataBase: new URL("https://campgogo.kr"),
   verification: {
     google: "N12Qd6VwYpWpSnc1j6ennbIK4E5ptRq4JMN8KL8Yr4M",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "캠핑고고 — 예약 앱이 못 보여주는 야영지",
-    description: "예약 앱이 못 보여주는 공공·저렴·차박 야영지 8,000곳+. 합법성 확인, 지역·테마·시즌별 탐색.",
+    description: "예약 앱이 놓치기 쉬운 공공·저렴·차박 야영지 8,000곳+. 합법성 확인과 지역·테마·시즌별 탐색.",
     url: "https://campgogo.kr",
     siteName: "캠핑고고",
     locale: "ko_KR",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "캠핑고고 — 예약 앱이 못 보여주는 야영지",
-    description: "공공·저렴·차박 야영지 8,000곳+. 합법성 확인, 지역·테마·시즌별 탐색.",
+    description: "공공·저렴·차박 야영지 8,000곳+. 합법성 확인과 지역·테마·시즌별 탐색.",
     images: ["https://campgogo.kr/api/og"],
   },
 };

@@ -1,16 +1,9 @@
 import { db } from "@/lib/db/client";
 import { pages, campsites, aiBudget, userReports } from "@/lib/db/schema";
-import { eq, desc, and, isNull, sql } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 import { SiteHeader } from "@/components/site-header";
 
 export const dynamic = "force-dynamic";
-
-// 간단 토큰 인증 — 실제 배포 시 middleware로 교체 권장
-function isAuthorized(req: Request): boolean {
-  const url = new URL(req.url);
-  const token = url.searchParams.get("token");
-  return token === (process.env.ADMIN_API_TOKEN ?? "");
-}
 
 type PageRow = {
   id: string;

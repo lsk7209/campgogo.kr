@@ -44,7 +44,8 @@ export function CookieBanner() {
       const t = setTimeout(() => setVisible(true), 800);
       return () => clearTimeout(t);
     }
-    setConsent(stored);
+    const t = setTimeout(() => setConsent(stored), 0);
+    return () => clearTimeout(t);
   }, []);
 
   function handleAccept() {

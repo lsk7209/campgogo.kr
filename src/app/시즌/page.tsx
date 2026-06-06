@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
@@ -61,7 +62,7 @@ export default function SeasonIndexPage() {
         <div style={{ background: "linear-gradient(135deg, var(--color-forest-800), var(--color-forest-600))", color: "#fff", padding: "52px 0 44px" }}>
           <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px" }}>
             <nav style={{ fontSize: "13px", color: "rgba(255,255,255,0.65)", marginBottom: "14px" }}>
-              <a href="/" style={{ color: "inherit", textDecoration: "none" }}>캠핑고고</a>{" / 시즌별"}
+              <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>캠핑고고</Link>{" / 시즌별"}
             </nav>
             <h1 style={{ fontSize: "clamp(26px, 4vw, 42px)", fontWeight: 800, letterSpacing: "-0.02em", margin: "0 0 12px", color: "#fff" }}>
               시즌별 추천 야영지

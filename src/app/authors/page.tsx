@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { StaticPageLayout } from "@/components/static-page-layout";
 
 export const metadata: Metadata = {
@@ -29,7 +30,7 @@ export default function AuthorsPage() {
 
       <h3>박절약 (saver) — 전체 글의 약 50%</h3>
       <p>
-        <strong>톤:</strong> 실용·비교·"이 값에 이 시설"
+        <strong>톤:</strong> 실용·비교·&quot;이 값에 이 시설&quot;
         <br />
         <strong>관심 주제:</strong> 가성비 야영지, 무료·공공 비교, 이용료 절약
         <br />
@@ -63,7 +64,7 @@ export default function AuthorsPage() {
       <h2>편집팀 연락</h2>
       <p>
         콘텐츠 오류 또는 사실 확인 요청은{" "}
-        <a href="/contact">정보 제보 페이지</a>를 이용해 주세요.
+        <Link href="/contact">정보 제보 페이지</Link>를 이용해 주세요.
       </p>
     </StaticPageLayout>
   );

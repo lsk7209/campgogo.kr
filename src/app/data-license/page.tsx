@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { StaticPageLayout } from "@/components/static-page-layout";
 
 export const metadata: Metadata = {
@@ -73,13 +74,13 @@ export default function DataLicensePage() {
       <h2>출처 표기 방식</h2>
       <p>
         각 야영지 페이지 하단에 해당 데이터의 출처와 라이선스 유형을 표기합니다.
-        예: "출처: 한국관광공사 고캠핑 (공공누리 제1유형)"
+        예: &quot;출처: 한국관광공사 고캠핑 (공공누리 제1유형)&quot;
       </p>
 
       <h2>데이터 오류 신고</h2>
       <p>
         공공데이터와 실제 현장 정보가 다를 경우{" "}
-        <a href="/contact">정보 제보</a>를 통해 알려주세요. 확인 후 수정합니다.
+        <Link href="/contact">정보 제보</Link>를 통해 알려주세요. 확인 후 수정합니다.
       </p>
     </StaticPageLayout>
   );

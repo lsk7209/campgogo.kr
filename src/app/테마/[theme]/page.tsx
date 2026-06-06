@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db/client";
 import { campsites } from "@/lib/db/schema";
@@ -221,16 +222,16 @@ export default async function ThemePage({
                 marginBottom: "14px",
               }}
             >
-              <a href="/" style={{ color: "inherit", textDecoration: "none" }}>
+              <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>
                 캠핑고고
-              </a>{" "}
+              </Link>{" "}
               /{" "}
-              <a
+              <Link
                 href="/테마"
                 style={{ color: "inherit", textDecoration: "none" }}
               >
                 테마
-              </a>{" "}
+              </Link>{" "}
               / {decoded}
             </nav>
             <h1

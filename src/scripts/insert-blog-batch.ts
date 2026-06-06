@@ -11,7 +11,6 @@ import { readdir, readFile } from "fs/promises";
 import { join } from "path";
 import { db } from "@/lib/db/client";
 import { blogPosts } from "@/lib/db/schema";
-import { sql } from "drizzle-orm";
 
 const DRAFTS_DIR = join(process.cwd(), "blog-drafts");
 const START_DATE = new Date("2026-07-13T13:00:00Z"); // 기존 185개(마지막=07-13 08:00Z) 이후 +5h

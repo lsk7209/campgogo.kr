@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { StaticPageLayout } from "@/components/static-page-layout";
 
 export const metadata: Metadata = {
@@ -43,14 +44,14 @@ export default function AboutPage() {
       <p>
         모든 야영지 정보는 한국관광공사 고캠핑, data.go.kr 전국야영장
         표준데이터 등 공공데이터를 1차 출처로 사용합니다. 라이선스는{" "}
-        <a href="/data-license">데이터 라이선스 페이지</a>에서 확인하세요.
+        <Link href="/data-license">데이터 라이선스 페이지</Link>에서 확인하세요.
       </p>
 
       <h2>편집 원칙</h2>
       <p>
-        정보는 사실 진술 형식으로만 제공합니다. "공식 허가"처럼 단정하는 표현은
+        정보는 사실 진술 형식으로만 제공합니다. &quot;공식 허가&quot;처럼 단정하는 표현은
         쓰지 않습니다. 변경될 수 있는 정보는 반드시 최종 확인을 권고합니다.
-        자세한 원칙은 <a href="/editorial-policy">편집 정책</a>을 참고하세요.
+        자세한 원칙은 <Link href="/editorial-policy">편집 정책</Link>을 참고하세요.
       </p>
 
       <h2>가상 페르소나 안내</h2>
@@ -58,7 +59,7 @@ export default function AboutPage() {
         본 사이트의 콘텐츠는 편집팀이 작성하며, 일부 글의 톤·큐레이션은 가상
         페르소나(박절약·정여행·김데이터)를 기반으로 합니다. 이 페르소나는{" "}
         <strong>실재 인물이 아닙니다.</strong> 자세한 안내는{" "}
-        <a href="/authors">가상 저자 안내</a>를 참고하세요.
+        <Link href="/authors">가상 저자 안내</Link>를 참고하세요.
       </p>
 
       <div className="notice-box">

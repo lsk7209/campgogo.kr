@@ -173,7 +173,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         <div style={{ background: "var(--color-forest-50)", borderBottom: "1px solid var(--color-gray-200)", padding: "44px 0 32px" }}>
           <div style={{ maxWidth: "1080px", margin: "0 auto", padding: "0 24px" }}>
             <nav style={{ fontSize: "13px", color: "var(--color-gray-400)", marginBottom: "14px" }}>
-              <a href="/blog" style={{ color: "var(--color-forest-600)", textDecoration: "none" }}>블로그</a>
+              <Link href="/blog" style={{ color: "var(--color-forest-600)", textDecoration: "none" }}>블로그</Link>
               {" / "}
               <span style={{ color: "var(--color-gray-600)" }}>{post.category}</span>
             </nav>
@@ -269,12 +269,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             <BlogAd />
 
             <div style={{ marginTop: "28px", paddingTop: "20px", borderTop: "1px solid var(--color-gray-200)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
-              <a href="/blog" style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-forest-600)", textDecoration: "none" }}>
+              <Link href="/blog" style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-forest-600)", textDecoration: "none" }}>
                 ← 블로그 목록
-              </a>
-              <a href="/match" style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-gray-500)", textDecoration: "none" }}>
+              </Link>
+              <Link href="/match" style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-gray-500)", textDecoration: "none" }}>
                 야영지 찾기 →
-              </a>
+              </Link>
             </div>
           </article>
 

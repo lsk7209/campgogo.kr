@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { Menu, Moon, Search, Sun, X } from "lucide-react";
 import { CampingLogo } from "./camping-logo";
 
 interface SiteHeaderProps {
@@ -23,7 +24,10 @@ export function SiteHeader({ activeNav }: SiteHeaderProps) {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    setIsDark(document.documentElement.classList.contains("dark"));
+    const t = window.setTimeout(() => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    }, 0);
+    return () => window.clearTimeout(t);
   }, []);
 
   function toggleDark() {
@@ -70,15 +74,17 @@ export function SiteHeader({ activeNav }: SiteHeaderProps) {
           </nav>
 
           <div className="ml-auto flex items-center gap-2.5">
-            <span
-              className="hidden sm:flex items-center gap-1.5 text-[13.5px] bg-white border px-3.5 py-2 rounded-full cursor-text"
+            <Link
+              href="/match"
+              className="hidden sm:flex items-center gap-1.5 text-[13.5px] bg-white border px-3.5 py-2 rounded-full no-underline transition-colors"
               style={{
                 color: "var(--color-gray-500)",
                 borderColor: "var(--color-gray-200)",
               }}
             >
-              🔍 지역·조건 검색
-            </span>
+              <Search size={15} aria-hidden="true" />
+              지역·조건 검색
+            </Link>
             <Link
               href="/match"
               className="text-[13.5px] font-semibold px-3.5 py-2 rounded-lg text-white transition-colors"
@@ -97,7 +103,7 @@ export function SiteHeader({ activeNav }: SiteHeaderProps) {
                 background: "transparent",
               }}
             >
-              {isDark ? "☀" : "☽"}
+              {isDark ? <Sun size={17} aria-hidden="true" /> : <Moon size={17} aria-hidden="true" />}
             </button>
           </div>
 
@@ -112,7 +118,7 @@ export function SiteHeader({ activeNav }: SiteHeaderProps) {
               color: "var(--color-gray-700)",
             }}
           >
-            {isOpen ? "✕" : "☰"}
+            {isOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
           </button>
         </div>
       </header>

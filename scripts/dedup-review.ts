@@ -5,8 +5,7 @@
  */
 import { db } from "../src/lib/db/client";
 import { campsites, dedupReview } from "../src/lib/db/schema";
-import { findDedupCandidates, isAutoMerge, isManualReview } from "../src/lib/curation/dedup";
-import { eq } from "drizzle-orm";
+import { findDedupCandidates, isAutoMerge } from "../src/lib/curation/dedup";
 
 async function main() {
   console.error("🔍 dedup 분석 중...");

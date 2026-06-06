@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { eq, and } from "drizzle-orm";
 import { db } from "@/lib/db/client";
@@ -174,15 +175,15 @@ export default async function CampsitePage({
         <div style={{ ...heroStyle, color: "#fff", padding: "48px 0 40px", minHeight: heroPhoto ? "260px" : "auto", display: "flex", alignItems: "flex-end" }}>
           <div style={{ maxWidth: "1080px", margin: "0 auto", padding: "0 24px", width: "100%" }}>
             <nav aria-label="위치" style={{ fontSize: "13px", color: "var(--color-forest-200)", marginBottom: "16px" }}>
-              <a href="/" style={{ color: "inherit", textDecoration: "none" }}>캠핑고고</a>
+              <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>캠핑고고</Link>
               {" / "}
-              <a href="/캠핑장" style={{ color: "inherit", textDecoration: "none" }}>전국 야영지</a>
+              <Link href="/캠핑장" style={{ color: "inherit", textDecoration: "none" }}>전국 야영지</Link>
               {" / "}
-              <a href={`/지역/${encodeURIComponent(campsite.sido)}`} style={{ color: "inherit", textDecoration: "none" }}>{campsite.sido}</a>
+              <Link href={`/지역/${encodeURIComponent(campsite.sido)}`} style={{ color: "inherit", textDecoration: "none" }}>{campsite.sido}</Link>
               {campsite.gungu && (
                 <>
                   {" / "}
-                  <a href={`/지역/${encodeURIComponent(campsite.sido)}/${encodeURIComponent(campsite.gungu)}`} style={{ color: "inherit", textDecoration: "none" }}>{campsite.gungu}</a>
+                  <Link href={`/지역/${encodeURIComponent(campsite.sido)}/${encodeURIComponent(campsite.gungu)}`} style={{ color: "inherit", textDecoration: "none" }}>{campsite.gungu}</Link>
                 </>
               )}
             </nav>
@@ -362,17 +363,17 @@ export default async function CampsitePage({
 
           {/* 같은 지역 더 보기 */}
           <div style={{ marginBottom: "32px", display: "flex", gap: "8px", flexWrap: "wrap" }}>
-            <a href={`/지역/${encodeURIComponent(campsite.sido)}`} style={{ padding: "9px 16px", borderRadius: "var(--radius-md)", border: "1px solid var(--color-forest-200)", background: "var(--color-forest-50)", color: "var(--color-forest-700)", fontSize: "13.5px", fontWeight: 600, textDecoration: "none" }}>
+            <Link href={`/지역/${encodeURIComponent(campsite.sido)}`} style={{ padding: "9px 16px", borderRadius: "var(--radius-md)", border: "1px solid var(--color-forest-200)", background: "var(--color-forest-50)", color: "var(--color-forest-700)", fontSize: "13.5px", fontWeight: 600, textDecoration: "none" }}>
               {campsite.sido} 야영지 더 보기 →
-            </a>
+            </Link>
             {campsite.gungu && (
-              <a href={`/지역/${encodeURIComponent(campsite.sido)}/${encodeURIComponent(campsite.gungu)}`} style={{ padding: "9px 16px", borderRadius: "var(--radius-md)", border: "1px solid var(--color-forest-200)", background: "var(--color-forest-50)", color: "var(--color-forest-700)", fontSize: "13.5px", fontWeight: 600, textDecoration: "none" }}>
+              <Link href={`/지역/${encodeURIComponent(campsite.sido)}/${encodeURIComponent(campsite.gungu)}`} style={{ padding: "9px 16px", borderRadius: "var(--radius-md)", border: "1px solid var(--color-forest-200)", background: "var(--color-forest-50)", color: "var(--color-forest-700)", fontSize: "13.5px", fontWeight: 600, textDecoration: "none" }}>
                 {campsite.sido} {campsite.gungu} 야영지 →
-              </a>
+              </Link>
             )}
-            <a href="/match" style={{ padding: "9px 16px", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-200)", background: "#fff", color: "var(--color-gray-700)", fontSize: "13.5px", fontWeight: 600, textDecoration: "none" }}>
+            <Link href="/match" style={{ padding: "9px 16px", borderRadius: "var(--radius-md)", border: "1px solid var(--color-gray-200)", background: "#fff", color: "var(--color-gray-700)", fontSize: "13.5px", fontWeight: 600, textDecoration: "none" }}>
               조건으로 야영지 찾기 →
-            </a>
+            </Link>
           </div>
 
           {/* 저자 + 출처 */}

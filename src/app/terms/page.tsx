@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { StaticPageLayout } from "@/components/static-page-layout";
 
 export const metadata: Metadata = {
@@ -18,7 +19,7 @@ export default function TermsPage() {
 
       <h2>제1조 목적</h2>
       <p>
-        본 약관은 캠핑고고(이하 "사이트")가 제공하는 야영지 정보 서비스의
+        본 약관은 캠핑고고(이하 &quot;사이트&quot;)가 제공하는 야영지 정보 서비스의
         이용 조건과 절차에 관한 사항을 규정합니다.
       </p>
 
@@ -46,7 +47,7 @@ export default function TermsPage() {
       <p>
         사이트 내 콘텐츠(텍스트, 디자인, 코드)의 저작권은 캠핑고고에 있습니다.
         공공데이터를 가공한 정보는 원본 데이터의 라이선스 조건을 따릅니다.
-        (<a href="/data-license">데이터 라이선스</a> 참고)
+        (<Link href="/data-license">데이터 라이선스</Link> 참고)
       </p>
 
       <h2>제6조 면책</h2>

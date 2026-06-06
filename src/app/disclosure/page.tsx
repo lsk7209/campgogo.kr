@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { StaticPageLayout } from "@/components/static-page-layout";
 
 export const metadata: Metadata = {
@@ -37,7 +38,7 @@ export default function DisclosurePage() {
 
       <h2>스폰서 콘텐츠</h2>
       <p>
-        스폰서십을 받아 작성된 콘텐츠는 "스폰서 콘텐츠" 또는 "광고" 라벨을
+        스폰서십을 받아 작성된 콘텐츠는 &quot;스폰서 콘텐츠&quot; 또는 &quot;광고&quot; 라벨을
         상단에 표기합니다. 스폰서가 있더라도 사실과 다른 정보는 게재하지
         않습니다.
       </p>
@@ -55,7 +56,7 @@ export default function DisclosurePage() {
 
       <h2>문의</h2>
       <p>
-        제휴 제안 또는 광고 문의는 <a href="/contact">정보 제보 페이지</a>를
+        제휴 제안 또는 광고 문의는 <Link href="/contact">정보 제보 페이지</Link>를
         통해 연락 주세요.
       </p>
     </StaticPageLayout>

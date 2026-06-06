@@ -12,7 +12,7 @@ const PAGE_SIZE = 18; // 카드형 3×N = 18이 자연스럽다
 export const metadata: Metadata = {
   title: "가이드 & 블로그 | 캠핑고고",
   description:
-    "공공·저렴·차박 야영지를 찾는 실전 가이드, 시즌 추천, 합법성 정보를 출처와 함께. 과장 없이, 결정에 필요한 것만.",
+    "공공·저렴·차박 야영지를 찾는 실전 가이드, 시즌 추천, 합법성 정보를 출처와 함께 정리합니다.",
   alternates: {
     canonical: `${process.env.SITE_URL ?? "https://campgogo.kr"}/blog`,
     types: { "application/rss+xml": "/feed.xml" },
@@ -67,7 +67,7 @@ type Post = {
 };
 
 const SEED_POSTS: Post[] = [
-  { href: "/blog/find-hidden-spots-with-public-data", title: "예약 앱에 안 나오는 차박 명소, 어떻게 찾을까 — 공공데이터 200% 활용법", excerpt: "data.go.kr의 야영장 데이터셋과 지자체 공지를 교차 확인하면, 앱에는 없는 한적한 노지를 찾을 수 있습니다.", category: "차박 가이드", date: "2026.06.01", readMin: 9, persona: "analyst", thumb: "forest" },
+  { href: "/blog/find-hidden-spots-with-public-data", title: "예약 앱에 안 나오는 차박 명소, 어떻게 찾을까", excerpt: "data.go.kr의 야영장 데이터셋과 지자체 공지를 교차 확인하면, 앱에는 없는 한적한 노지를 찾을 수 있습니다.", category: "차박 가이드", date: "2026.06.01", readMin: 9, persona: "analyst", thumb: "forest" },
   { href: "/blog/june-budget-spots-before-rain", title: "2026년 6월, 장마 전 마지막 주말 가성비 노지 12곳", excerpt: "장마가 오기 전 6월 주말, 예산 부담 없이 다녀올 수 있는 노지·공공 야영지 12곳.", category: "시즌 추천", date: "2026.05.30", readMin: 7, persona: "traveler", thumb: "sunset" },
   { href: "/blog/chabak-legality-2025-cases", title: "차박 단속, 어디서 왜 — 2025년 사례로 보는 합법성 판단법", excerpt: "2025년 전국 단속 사례를 분석해 합법·불법을 가르는 기준 3가지를 정리했습니다.", category: "데이터 · 정책", date: "2026.05.27", readMin: 11, persona: "analyst", thumb: "sky" },
   { href: "/blog/chabak-first-night-checklist", title: "초보 차박 첫날 밤, 반드시 챙겨야 할 7가지", excerpt: "화기 금지 구역 확인부터 일출 전 정리까지, 단속을 피하고 자연을 지키는 기본기.", category: "차박 가이드", date: "2026.05.24", readMin: 6, persona: "saver", thumb: "forest" },
@@ -211,7 +211,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
               캠핑·차박·공공 야영지<br />사실 기반 가이드
             </h1>
             <p style={{ fontSize: "14px", lineHeight: 1.7, color: "var(--color-forest-200)", maxWidth: "460px", margin: "0 0 20px" }}>
-              공공데이터·법령 기반. 후기 커뮤니티 아닌 사실 확인 중심 글 {totalCount > 0 ? `${totalCount}편+` : ""}.
+              공공데이터와 법령을 바탕으로, 후기보다 확인 가능한 정보에 집중합니다{totalCount > 0 ? ` · ${totalCount}편+` : ""}.
             </p>
             {/* Category tabs */}
             <div className="blog-cat-scroll">
@@ -236,7 +236,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
           {featured && (
             <section aria-label="주목 글" style={{ marginBottom: "40px" }}>
               <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--color-forest-600)", marginBottom: "12px" }}>
-                ★ 주목 글
+                주목 글
               </p>
               <div className="blog-featured-grid">
                 <PostCard post={featured} featured />

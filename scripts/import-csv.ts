@@ -9,7 +9,6 @@ import { db } from "../src/lib/db/client";
 import { campsites, dataSources } from "../src/lib/db/schema";
 import { classifyCampsite } from "../src/lib/curation/classify";
 import { calcFitScore } from "../src/lib/curation/fit-score";
-import { calcDistanceFromCities } from "../src/lib/curation/distance";
 import { normalizeSido } from "../src/lib/api/_utils";
 
 const CSV_PATH = process.argv[2] ?? "C:/Users/dlatj/Downloads/한국관광공사 전국 야영장 등록 현황_20260210.csv";
@@ -107,10 +106,10 @@ async function main() {
 
       const [
         num, name, operator, doRaw, gungu, address,
-        generalSites, carSites, glamping, caravan, personalCaravan,
+        , carSites, glamping, , ,
         , , , , , , , , , , ,
-        licenseDate, firePit, facilities, nearbyFacilities,
-        , , , , theme, equipRental, petFriendly,
+        , , facilities, nearbyFacilities,
+        , , , , theme, , petFriendly,
       ] = cols;
 
       if (!name?.trim()) { skipped++; continue; }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db/client";
 import { campsites } from "@/lib/db/schema";
@@ -51,9 +52,9 @@ export default async function GunguPage({ params }: { params: Promise<{ sido: st
         <div style={{ background: "linear-gradient(135deg, var(--color-forest-800), var(--color-forest-600))", color: "#fff", padding: "48px 0 40px" }}>
           <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px" }}>
             <nav style={{ fontSize: "13px", color: "var(--color-forest-200)", marginBottom: "14px" }}>
-              <a href="/" style={{ color: "inherit", textDecoration: "none" }}>캠핑고고</a>
+              <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>캠핑고고</Link>
               {" / "}
-              <a href={`/지역/${sido}`} style={{ color: "inherit", textDecoration: "none" }}>{s}</a>
+              <Link href={`/지역/${sido}`} style={{ color: "inherit", textDecoration: "none" }}>{s}</Link>
               {" / "}{g}
             </nav>
             <h1 style={{ fontSize: "clamp(24px, 4vw, 38px)", fontWeight: 800, letterSpacing: "-0.02em", margin: "0 0 10px", color: "#fff" }}>

@@ -63,8 +63,6 @@ export async function GET(req: Request) {
         return Response.json({ done: true, cycleComplete: true, upserted, processed: processedThisRun });
       }
 
-      const totalPages = Math.ceil(body.totalCount / PAGE_SIZE);
-
       for (const raw of rawItems) {
         if (processedThisRun >= MAX_ITEMS_PER_RUN) break;
 

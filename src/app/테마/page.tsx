@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
@@ -106,9 +107,9 @@ export default function ThemeIndexPage() {
                 marginBottom: "14px",
               }}
             >
-              <a href="/" style={{ color: "inherit", textDecoration: "none" }}>
+              <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>
                 캠핑고고
-              </a>{" "}
+              </Link>{" "}
               / 테마
             </nav>
             <h1

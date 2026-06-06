@@ -33,9 +33,9 @@ export function SiteFooter() {
 
           <FooterCol title="정책 · 정보">
             <FooterLink href="/about">소개</FooterLink>
-            <FooterLink href="/editorial">편집 정책</FooterLink>
+            <FooterLink href="/editorial-policy">편집 정책</FooterLink>
             <FooterLink href="/data-license">데이터 라이선스</FooterLink>
-            <FooterLink href="/ads">광고·제휴 정책</FooterLink>
+            <FooterLink href="/disclosure">광고·제휴 고지</FooterLink>
             <FooterLink href="/contact">정보 제보</FooterLink>
           </FooterCol>
 
@@ -56,7 +56,7 @@ export function SiteFooter() {
             className="text-[12.5px] leading-[1.6]"
             style={{ color: "var(--color-forest-300)" }}
           >
-            © 2026 캠핑고고 · 콘텐츠는 편집팀이 작성하고 AI 보조가 사용됩니다
+            © 2026 캠핑고고 · 콘텐츠는 편집팀이 작성하고 AI 보조를 활용합니다
             · 가상 페르소나는 실재 인물이 아닙니다.
           </p>
           <span

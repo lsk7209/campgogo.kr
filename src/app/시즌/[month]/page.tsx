@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db/client";
 import { campsites } from "@/lib/db/schema";
@@ -264,19 +265,19 @@ export default async function MonthSeasonPage({
                 marginBottom: "16px",
               }}
             >
-              <a
+              <Link
                 href="/"
                 style={{ color: "inherit", textDecoration: "none" }}
               >
                 캠핑고고
-              </a>
+              </Link>
               {" / "}
-              <a
+              <Link
                 href="/시즌"
                 style={{ color: "inherit", textDecoration: "none" }}
               >
                 시즌별
-              </a>
+              </Link>
               {" / "}
               {info.korean}
             </nav>

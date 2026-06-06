@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { db } from "@/lib/db/client";
 import { campsites } from "@/lib/db/schema";
 import { desc, isNotNull } from "drizzle-orm";
@@ -115,9 +116,9 @@ export default async function CampsiteIndexPage() {
                 marginBottom: "14px",
               }}
             >
-              <a href="/" style={{ color: "inherit", textDecoration: "none" }}>
+              <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>
                 캠핑고고
-              </a>{" "}
+              </Link>{" "}
               / 캠핑장
             </nav>
             <h1

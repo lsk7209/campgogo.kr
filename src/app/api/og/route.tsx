@@ -1,7 +1,5 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
-
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const title = url.searchParams.get("title") ?? "캠핑고고";

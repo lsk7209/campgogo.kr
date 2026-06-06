@@ -43,9 +43,9 @@ export async function runMatching(input: MatchInput): Promise<CampsiteMatchData[
       const r = input.radius ?? 100;
       const withDist = results
         .filter(c => c.lat != null && c.lng != null && haversineKm(city.lat, city.lng, c.lat!, c.lng!) <= r)
-        .map(c => ({ ...c, _d: haversineKm(city.lat, city.lng, c.lat!, c.lng!) }))
-        .sort((a, b) => a._d - b._d);
-      results = withDist.map(({ _d, ...rest }) => rest as CampsiteMatchData);
+        .map(c => ({ campsite: c, distanceKm: haversineKm(city.lat, city.lng, c.lat!, c.lng!) }))
+        .sort((a, b) => a.distanceKm - b.distanceKm);
+      results = withDist.map(({ campsite }) => campsite);
     }
   } else {
     results = results.slice().sort((a, b) => b.fitScore - a.fitScore);

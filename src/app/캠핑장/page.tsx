@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { db } from "@/lib/db/client";
 import { campsites } from "@/lib/db/schema";
 import { desc, isNotNull } from "drizzle-orm";
@@ -117,9 +118,9 @@ export default async function CampsiteIndexPage() {
                 marginBottom: "14px",
               }}
             >
-              <a href="/" style={{ color: "inherit", textDecoration: "none" }}>
+              <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>
                 캠핑고고
-              </a>{" "}
+              </Link>{" "}
               / 캠핑장
             </nav>
             <h1
@@ -264,12 +265,12 @@ export default async function CampsiteIndexPage() {
                   적합도 높은 야영지
                 </h2>
                 <div style={{ display: "flex", gap: "16px" }}>
-                  <a href="/지역" style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-forest-600)", textDecoration: "none" }}>
+                  <Link href="/지역" style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-forest-600)", textDecoration: "none" }}>
                     지역별 전체 보기 →
-                  </a>
-                  <a href="/match" style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-gray-500)", textDecoration: "none" }}>
+                  </Link>
+                  <Link href="/match" style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-gray-500)", textDecoration: "none" }}>
                     내 조건으로 찾기 →
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className="grid4">

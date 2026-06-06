@@ -57,12 +57,12 @@ export default async function HomePage() {
               <span style={{ width: "22px", height: "1.5px", background: "var(--color-sunset-400)", display: "inline-block" }} />
             </div>
             <h1 style={{ fontSize: "clamp(28px, 5vw, 52px)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 20px", color: "#fff" }}>
-              예약 앱이 못 보여주는
+              예약 앱이 놓치기 쉬운
               <br />야영지를 찾아드립니다
             </h1>
             <p style={{ fontSize: "18px", lineHeight: 1.75, color: "var(--color-forest-100)", marginBottom: "36px", maxWidth: "520px", margin: "0 auto 36px" }}>
-              공공·저렴·차박 야영지{totalCount > 0 ? ` ${totalCount.toLocaleString("ko-KR")}곳+` : ""}. 후기 커뮤니티도, 실시간 예약도 아닙니다.
-              정확한 정보와 합법성 확인에 집중합니다.
+              공공·저렴·차박 야영지{totalCount > 0 ? ` ${totalCount.toLocaleString("ko-KR")}곳+` : ""}. 후기 커뮤니티나 실시간 예약 서비스가 아니라,
+              출처가 있는 정보와 합법성 확인에 집중합니다.
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", justifyContent: "center" }}>
               <Link href="/match" style={{ fontSize: "15px", fontWeight: 700, padding: "13px 28px", borderRadius: "var(--radius-md)", background: "var(--color-sunset-600)", color: "#fff", textDecoration: "none", transition: "background 120ms" }}>
@@ -131,7 +131,7 @@ export default async function HomePage() {
         <section style={{ background: "var(--color-forest-800)", color: "#fff", padding: "64px 24px" }}>
           <div style={{ maxWidth: "960px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "40px" }}>
             {[
-              { icon: "🔍", title: "앱에 없는 곳", desc: "인기 유료 글램핑이 아닌 공공·노지·차박 야영지에 집중합니다." },
+              { icon: "🔍", title: "앱이 놓치기 쉬운 곳", desc: "인기 유료 글램핑이 아닌 공공·노지·차박 야영지에 집중합니다." },
               { icon: "⚖️", title: "합법성 확인", desc: "차박 허용 여부를 4단계 신뢰도로 출처와 함께 표기합니다." },
               { icon: "📊", title: "공공데이터 기반", desc: "한국관광공사·data.go.kr 공공데이터를 1차 출처로 사용합니다." },
             ].map((item) => (

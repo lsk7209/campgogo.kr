@@ -7,7 +7,7 @@ import * as fs from "node:fs";
 import { db } from "../src/lib/db/client";
 import { campsites } from "../src/lib/db/schema";
 import { calcFitScore } from "../src/lib/curation/fit-score";
-import { gt, isNotNull, isNull, or, eq, and } from "drizzle-orm";
+import { gt, isNotNull, isNull, and } from "drizzle-orm";
 
 interface MatchData {
   id: string;
@@ -104,7 +104,6 @@ async function main() {
   // 적합도 높은 순 정렬
   data.sort((a, b) => b.fitScore - a.fitScore);
 
-  const json = JSON.stringify(data);
   const jsonMin = JSON.stringify(data); // same, no pretty-print for size
 
   fs.mkdirSync("public", { recursive: true });
