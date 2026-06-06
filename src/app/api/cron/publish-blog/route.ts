@@ -2,13 +2,14 @@ import { db } from "@/lib/db/client";
 import { blogPosts } from "@/lib/db/schema";
 import { and, eq, gte, lte } from "drizzle-orm";
 import { getGscAccessToken, hasGscCredentials } from "@/lib/gsc/auth";
+import { siteUrl } from "@/lib/seo/site-url";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
 const SITE = "campgogo.kr";
 const INDEXNOW_KEY = process.env.INDEXNOW_KEY ?? "";
-const SITE_URL = process.env.SITE_URL ?? "https://campgogo.kr";
+const SITE_URL = siteUrl();
 const GSC_SITE = encodeURIComponent(`https://${SITE}/`);
 
 async function submitIndexNow(urls: string[]) {

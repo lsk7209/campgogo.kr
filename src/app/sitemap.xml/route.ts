@@ -1,19 +1,17 @@
+import { siteUrl } from "@/lib/seo/site-url";
+
 export const dynamic = "force-dynamic";
 export const revalidate = 3600;
 
-const SITE = process.env.SITE_URL ?? "https://campgogo.kr";
-
 const SITEMAPS = [
-  { loc: `${SITE}/sitemap-static.xml` },
-  { loc: `${SITE}/sitemap-campsites.xml` },
-  { loc: `${SITE}/sitemap-blog.xml` },
+  siteUrl("/sitemap-static.xml"),
+  siteUrl("/sitemap-blog.xml"),
 ];
 
 export async function GET(): Promise<Response> {
   const today = new Date().toISOString().slice(0, 10);
-
   const entries = SITEMAPS.map(
-    (s) => `  <sitemap>\n    <loc>${s.loc}</loc>\n    <lastmod>${today}</lastmod>\n  </sitemap>`
+    (loc) => `  <sitemap>\n    <loc>${loc}</loc>\n    <lastmod>${today}</lastmod>\n  </sitemap>`
   );
 
   const xml = [

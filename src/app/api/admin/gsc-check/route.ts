@@ -3,14 +3,14 @@
 export const runtime = "nodejs";
 
 import { getGscAccessToken, hasGscCredentials } from "@/lib/gsc/auth";
+import { siteUrl } from "@/lib/seo/site-url";
 
-const SITE_URL = process.env.SITE_URL ?? "https://campgogo.kr";
+const SITE_URL = siteUrl();
 
 const SITEMAPS = [
   `${SITE_URL}/sitemap.xml`,
   `${SITE_URL}/sitemap-static.xml`,
   `${SITE_URL}/sitemap-blog.xml`,
-  `${SITE_URL}/sitemap-campsites.xml`,
 ];
 
 export async function GET(req: Request) {

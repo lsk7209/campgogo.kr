@@ -1,14 +1,13 @@
 import { db } from "@/lib/db/client";
 import { pages } from "@/lib/db/schema";
+import { cleanSitemapLoc, siteUrl } from "@/lib/seo/site-url";
 import { eq } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 3600;
 
-const SITE = process.env.SITE_URL ?? "https://campgogo.kr";
-
 function esc(s: string) {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return cleanSitemapLoc(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 function urlEntry(loc: string, lastmod: string) {
@@ -27,7 +26,7 @@ export async function GET(): Promise<Response> {
 
     for (const p of publishedPages) {
       const lastmod = p.updatedAt ? p.updatedAt.toISOString().slice(0, 10) : today;
-      const loc = p.url.startsWith("http") ? p.url : `${SITE}${p.url}`;
+      const loc = p.url.startsWith("http") ? p.url : siteUrl(p.url);
       entries.push(urlEntry(loc, lastmod));
     }
   } catch { /* DB 없을 시 빈 sitemap 반환 */ }
