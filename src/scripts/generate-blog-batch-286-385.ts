@@ -261,20 +261,11 @@ function mdEscape(text: string) {
 }
 
 function colorCallout(topic: Topic, index: number, tone: "answer" | "caution" | "note") {
-  const palettes = {
-    answer: [
-      { border: "#2F6F4E", bg: "#F0F7F2", title: "핵심 판단" },
-      { border: "#2E86AB", bg: "#EEF7FB", title: "바로 답하기" },
-    ],
-    caution: [
-      { border: "#D88758", bg: "#FFF6EF", title: "주의할 점" },
-      { border: "#B84A4A", bg: "#FFF1F1", title: "멈춰야 할 신호" },
-    ],
-    note: [
-      { border: "#6B7280", bg: "#F6F7F5", title: "현장 메모" },
-      { border: "#2F6F4E", bg: "#F0F7F2", title: "확인 순서" },
-    ],
-  }[tone][index % 2];
+  const styles = {
+    answer: { className: index % 2 === 0 ? "notice-box" : "tip-box", title: index % 2 === 0 ? "핵심 판단" : "바로 답하기" },
+    caution: { className: "warning-box", title: index % 2 === 0 ? "주의할 점" : "멈춰야 할 신호" },
+    note: { className: index % 2 === 0 ? "tip-box" : "notice-box", title: index % 2 === 0 ? "현장 메모" : "확인 순서" },
+  }[tone];
 
   const sentence =
     tone === "answer"
@@ -283,7 +274,7 @@ function colorCallout(topic: Topic, index: number, tone: "answer" | "caution" | 
         ? `${topic.caution} 이 항목이 불확실하면 예약을 미루거나 더 관리가 쉬운 대안을 고르는 편이 낫다.`
         : `${topic.fieldExample} 이처럼 실제 이동, 시설, 날씨를 한 줄씩 적어두면 다음 선택의 기준이 선명해진다.`;
 
-  return `<div style="border-left:4px solid ${palettes.border};background:${palettes.bg};padding:14px 16px;margin:18px 0;border-radius:8px"><strong style="color:${palettes.border}">${palettes.title}</strong><br />${sentence}</div>`;
+  return `<div class="${styles.className}"><strong>${styles.title}</strong><br />${sentence}</div>`;
 }
 
 function formatTable(topic: Topic) {
@@ -459,6 +450,94 @@ function scenarioBlock(topic: Topic, index: number) {
   ].join("\n");
 }
 
+function evidenceBlock(topic: Topic) {
+  const sourceLines = topic.sourceKeys.map((key) => {
+    const source = SOURCES[key];
+    const claim = {
+      gocamping: "캠핑장 기본 시설, 운영 형태, 주소, 예약 정보의 1차 확인처로 쓴다.",
+      knps: "국립공원 야영장 예약 가능 여부와 이용 제한을 확인할 때 우선한다.",
+      forest: "숲·자연휴양림 계열 예약과 산림 지역 이용 제한을 확인하는 근거로 삼는다.",
+      weather: "강수, 강풍, 폭염, 한파처럼 출발 판단을 바꾸는 날씨 변수에 사용한다.",
+      law: "허용 구역, 금지 행위, 과태료 가능성처럼 법적 해석이 필요한 대목에 사용한다.",
+      data: "지역·시설·공공 운영 정보를 교차 확인하고 키워드 겹침을 줄이는 데 사용한다.",
+      safe: "재난 문자, 특보, 안전 행동 요령처럼 철수 기준을 잡는 근거로 사용한다.",
+      consumer: "예약 취소, 환불, 이용자 분쟁 가능성을 볼 때 참고한다.",
+    }[key];
+    return `- [${source.name}](${source.url}): ${claim}`;
+  });
+
+  const formatNote = {
+    decision: "결정형 글은 찬반을 길게 늘어놓기보다 독자가 바로 선택할 수 있는 기준을 남겨야 한다.",
+    checklist: "체크리스트형 글은 목록의 길이보다 누락하면 일정이 흔들리는 항목을 앞에 둬야 한다.",
+    route: "루트형 글은 장소보다 이동 순서, 도착 시간, 철수 여백을 먼저 설명해야 한다.",
+    risk: "위험형 글은 가능한 방법보다 멈춰야 하는 기준을 더 분명하게 써야 한다.",
+    data: "데이터형 글은 출처 이름만 나열하지 말고 어떤 판단을 뒷받침하는지 연결해야 한다.",
+    cost: "비용형 글은 싼 선택보다 반복 지출과 숨은 비용을 줄이는 기준을 보여줘야 한다.",
+    access: "접근성 글은 사진보다 실제 이동 순서와 동행자 부담을 먼저 검증해야 한다.",
+    season: "계절형 글은 같은 장소라도 월별 변수와 예보 기준을 분리해서 읽어야 한다.",
+  }[topic.format];
+
+  return [
+    `## ${topic.mainKeyword} 근거 확인`,
+    "",
+    `${formatNote} 이 글에서는 아래 출처를 단순 참고 링크가 아니라 판단 근거로 나눈다. 출발 직전에는 링크를 다시 열어 최신 공지, 특보, 예약 가능 여부가 바뀌지 않았는지 확인해야 한다.`,
+    "",
+    ...sourceLines,
+    "",
+    `출처를 이렇게 나눠 보면 ${topic.mainKeyword}의 답이 더 선명해진다. 시설 정보는 운영처에서 보고, 날씨와 안전은 별도 기관에서 보고, 환불이나 허용 여부는 규정 성격의 출처로 확인한다. 한 출처가 모든 질문에 답한다고 생각하면 글도 얇아지고 실제 일정도 흔들린다.`,
+  ].join("\n");
+}
+
+function mediaAndLinkBlock(topic: Topic, index: number) {
+  const imageIdeas = {
+    decision: `${topic.mainKeyword} 판단 기준을 한 장에 정리한 체크카드`,
+    checklist: `${topic.mainKeyword} 출발 전 확인 항목을 보여주는 캠핑 짐 정리 장면`,
+    route: `${topic.mainKeyword} 이동 동선과 도착 후 설치 순서를 보여주는 지도형 이미지`,
+    risk: `${topic.mainKeyword}에서 멈춰야 할 날씨·현장 신호를 표시한 안전 카드`,
+    data: `${topic.mainKeyword} 공식 출처와 후기 교차 확인 과정을 보여주는 화면`,
+    cost: `${topic.mainKeyword} 예산 항목을 나눈 간단한 비용표 이미지`,
+    access: `${topic.mainKeyword} 주차장, 사이트, 화장실 이동선을 보여주는 안내 이미지`,
+    season: `${topic.mainKeyword} 계절 변수와 예보 확인 순서를 보여주는 달력형 이미지`,
+  }[topic.format];
+  const firstLink = topic.internal[0];
+  const secondLink = topic.internal[1] ?? topic.internal[0];
+
+  return [
+    `## ${topic.mainKeyword} 이미지와 내부링크 활용`,
+    "",
+    `이 글에 대표 이미지를 넣는다면 '${imageIdeas}'가 가장 적합하다. alt 문구는 '${topic.mainKeyword} ${topic.expanded[0]} 판단 기준'처럼 메인 키워드와 확장 키워드를 함께 넣되, 보이지 않는 키워드 나열처럼 쓰지 않는다. 이미지는 장식보다 독자가 판단 순서를 빠르게 이해하도록 돕는 역할이어야 한다.`,
+    "",
+    `내부링크는 문맥 안에서 역할을 나눠 배치한다. [${firstLink.text}](${firstLink.href})는 조건을 다시 좁히는 행동 링크로 쓰고, [${secondLink.text}](${secondLink.href})는 지역이나 관련 주제를 더 보는 탐색 링크로 둔다. 두 링크가 같은 역할을 하면 클릭 이유가 약해지므로, 하나는 '결정', 하나는 '확장'으로 나누는 편이 낫다.`,
+    "",
+    `CTA도 모든 글에서 같은 문장으로 끝내면 신뢰가 떨어진다. ${index % 2 === 0 ? "이 글은 조건을 좁힌 뒤 맞춤 검색으로 넘어가게 하는 흐름이 자연스럽다." : "이 글은 관련 지역·테마 글을 더 읽은 뒤 예약 전 확인으로 넘어가게 하는 흐름이 자연스럽다."} 그래서 마지막 행동은 독자의 현재 단계에 맞게 짧고 구체적으로 남긴다.`,
+  ].join("\n");
+}
+
+function differentiationBlock(topic: Topic, index: number) {
+  const readerLevels = ["처음 가는 사람", "한두 번 실패를 겪은 사람", "동행자 조건을 맞춰야 하는 사람", "비용과 안전을 함께 보는 사람"];
+  const reader = readerLevels[index % readerLevels.length];
+  const avoid = {
+    decision: "장단점을 같은 비중으로 늘어놓는 글",
+    checklist: "누구에게나 적용되는 긴 준비물 목록",
+    route: "관광지만 많이 묶고 도착 후 피로를 계산하지 않는 글",
+    risk: "위험을 말하면서도 실제 중단 기준이 없는 글",
+    data: "출처 이름은 많지만 어떤 판단에 쓰는지 설명하지 않는 글",
+    cost: "저렴한 선택만 강조하고 반복 지출을 보지 않는 글",
+    access: "편의시설 사진만 보여주고 이동 순서를 검증하지 않는 글",
+    season: "계절 이름만 바꾸고 예보 기준을 제시하지 않는 글",
+  }[topic.format];
+
+  return [
+    `### 상위 글과 다르게 보여야 할 지점`,
+    "",
+    `${topic.mainKeyword} 글이 검색 결과에서 살아남으려면 ${avoid}처럼 보이면 안 된다. 이 글의 독자는 ${reader}이라고 가정하고, 한 번에 많은 정보를 주기보다 바로 판단할 수 있는 기준을 남기는 쪽이 낫다. 특히 ${topic.expanded.slice(0, 2).join("와 ")}는 제목에만 넣으면 키워드 장식이 되고, 본문에서 실제 선택 기준으로 쓰면 검색 의도에 맞는 답이 된다.`,
+    "",
+    `차별화 포인트는 세 가지다. 첫째, 공식 출처와 후기를 같은 층위로 섞지 않는다. 둘째, 좋은 조건보다 포기할 조건을 먼저 적는다. 셋째, 독자가 다음 행동을 할 수 있게 내부링크를 역할별로 둔다. 이 세 가지가 들어가면 글은 단순 추천 목록이 아니라 예약 전 의사결정 도구에 가까워진다.`,
+    "",
+    `또 하나는 표현의 밀도다. '${topic.mainKeyword} 추천' 같은 문장을 반복하면 검색엔진에는 키워드가 보일 수 있지만 독자에게는 새 정보가 늘지 않는다. 대신 '${topic.decisionRule}'처럼 판단 기준을 한 문장으로 압축하고, 그 기준을 표, 사례, 질문, 출처로 다시 확인시키는 편이 낫다. 이렇게 구성하면 GEO 요약에도 잘 걸리고, 사람이 읽을 때도 왜 이 글을 읽어야 하는지 분명해진다.`,
+  ].join("\n");
+}
+
 function renderVariedBody(topic: Topic, index: number) {
   const sections = formatSections(topic, index);
   const sourceNames = topic.sourceKeys.map((key) => SOURCES[key].name).join(", ");
@@ -508,7 +587,11 @@ function renderVariedBody(topic: Topic, index: number) {
     "",
     `이 순서는 ${topic.mainKeyword}뿐 아니라 대부분의 캠핑 일정에 적용된다. 다만 글의 유형에 따라 강조점은 달라진다. 위험형 글은 철수와 취소 기준을 더 앞에 둬야 하고, 비용형 글은 현장 구매를 줄이는 목록이 먼저 와야 한다. 접근성 글은 시설 사진보다 이동 순서를 먼저 설명해야 하며, 루트형 글은 관광지를 많이 넣는 대신 쉬는 시간을 남겨야 한다.`,
     "",
+    differentiationBlock(topic, index),
+    "",
     scenarioBlock(topic, index),
+    "",
+    evidenceBlock(topic),
     "",
     `### 빠른 자체 점검`,
     "",
@@ -531,6 +614,8 @@ function renderVariedBody(topic: Topic, index: number) {
     `- 무료 또는 저렴하다는 이유로 허용 여부를 확인하지 않는 결정`,
     `- 동행자의 체력과 수면 조건을 낙관적으로 보는 결정`,
     `- ${topic.mainKeyword}와 상관없는 장비 구매로 문제를 해결하려는 결정`,
+    "",
+    mediaAndLinkBlock(topic, index),
     "",
     `## ${sections[4]}`,
     "",

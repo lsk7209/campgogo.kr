@@ -65,8 +65,22 @@ function sanitizeHtml(html: string): string {
 }
 
 // ── 마크다운 → HTML (heading ID 포함) ────────────────────
+function renderMarkdownTables(md: string): string {
+  return md.replace(/(^\|.+\|\n^\|[-:\s|]+\|\n(?:^\|.*\|\n?)*)/gm, (block) => {
+    const lines = block.trim().split("\n");
+    if (lines.length < 3) return block;
+    const parse = (line: string) => line.replace(/^\||\|$/g, "").split("|").map((cell) => cell.trim());
+    const headers = parse(lines[0]);
+    const rows = lines.slice(2).map(parse).filter((row) => row.length === headers.length);
+    if (rows.length === 0) return block;
+    const thead = `<thead><tr>${headers.map((cell) => `<th>${cell}</th>`).join("")}</tr></thead>`;
+    const tbody = `<tbody>${rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody>`;
+    return `<table>${thead}${tbody}</table>`;
+  });
+}
+
 function markdownToHtml(md: string): string {
-  let html = md;
+  let html = renderMarkdownTables(md);
 
   // Headings with id
   html = html.replace(/^### (.+)$/gm, (_, t) => `<h3 id="${slugify(t)}">${t}</h3>`);
