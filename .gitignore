@@ -13,6 +13,9 @@
 # testing
 /coverage
 
+# generated operational reports
+/reports/*.json
+
 # next.js
 /.next/
 /out/
