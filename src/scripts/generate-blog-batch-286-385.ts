@@ -260,6 +260,296 @@ function mdEscape(text: string) {
   return text.replace(/\*/g, "");
 }
 
+function colorCallout(topic: Topic, index: number, tone: "answer" | "caution" | "note") {
+  const palettes = {
+    answer: [
+      { border: "#2F6F4E", bg: "#F0F7F2", title: "핵심 판단" },
+      { border: "#2E86AB", bg: "#EEF7FB", title: "바로 답하기" },
+    ],
+    caution: [
+      { border: "#D88758", bg: "#FFF6EF", title: "주의할 점" },
+      { border: "#B84A4A", bg: "#FFF1F1", title: "멈춰야 할 신호" },
+    ],
+    note: [
+      { border: "#6B7280", bg: "#F6F7F5", title: "현장 메모" },
+      { border: "#2F6F4E", bg: "#F0F7F2", title: "확인 순서" },
+    ],
+  }[tone][index % 2];
+
+  const sentence =
+    tone === "answer"
+      ? `${topic.mainKeyword}의 결론은 장소 이름보다 조건의 일치도를 먼저 보는 것이다. ${topic.decisionRule}`
+      : tone === "caution"
+        ? `${topic.caution} 이 항목이 불확실하면 예약을 미루거나 더 관리가 쉬운 대안을 고르는 편이 낫다.`
+        : `${topic.fieldExample} 이처럼 실제 이동, 시설, 날씨를 한 줄씩 적어두면 다음 선택의 기준이 선명해진다.`;
+
+  return `<div style="border-left:4px solid ${palettes.border};background:${palettes.bg};padding:14px 16px;margin:18px 0;border-radius:8px"><strong style="color:${palettes.border}">${palettes.title}</strong><br />${sentence}</div>`;
+}
+
+function formatTable(topic: Topic) {
+  switch (topic.format) {
+    case "cost":
+      return [
+        "| 비용 항목 | 먼저 볼 기준 | 줄이는 방법 |",
+        "|---|---|---|",
+        `| 예약비 | ${topic.mainKeyword}의 기본 요금과 추가 인원 요금 | 비성수기, 평일, 짧은 숙박을 비교한다 |`,
+        "| 식비 | 반복 구매가 생기는 재료인지 | 집에서 소분하고 현장 구매 품목을 줄인다 |",
+        "| 장비 | 이번 일정에 꼭 필요한지 | 대여, 공유, 기존 장비 조합을 먼저 검토한다 |",
+        "| 이동비 | 우회 동선이 있는지 | 장보기와 충전을 한 동선으로 묶는다 |",
+      ].join("\n");
+    case "route":
+      return [
+        "| 구간 | 확인할 것 | 실패를 줄이는 기준 |",
+        "|---|---|---|",
+        "| 출발 전 | 장보기, 충전, 주유, 도착 제한 시간 | 한 번에 처리되는 동선을 고른다 |",
+        `| 진입 | ${topic.expanded[0]} 주변 도로 폭과 야간 조명 | 초행이면 해 지기 전 도착한다 |`,
+        "| 설치 | 화장실, 개수대, 주차 위치 | 첫 20분 안에 기본 동선이 잡히는지 본다 |",
+        "| 다음 날 | 산책, 관광, 철수 순서 | 한 가지 활동만 넣고 여백을 둔다 |",
+      ].join("\n");
+    case "risk":
+      return [
+        "| 신호 | 의미 | 행동 |",
+        "|---|---|---|",
+        "| 예보가 빠르게 바뀜 | 현장 조건도 흔들릴 가능성 | 출발 전 대안 숙소나 철수 기준을 정한다 |",
+        "| 물가, 사면, 강풍 노출 | 작은 변화가 큰 위험으로 번질 수 있음 | 낮은 위험의 관리형 캠핑장으로 바꾼다 |",
+        `| ${topic.expanded[0]} 정보가 불명확 | 판단 근거가 부족함 | 공식 공지와 현장 문의를 우선한다 |`,
+        "| 동행자가 불편을 말함 | 일정 강행의 비용이 커짐 | 장비보다 철수 결정을 먼저 준비한다 |",
+      ].join("\n");
+    case "access":
+      return [
+        "| 접근 항목 | 예약 전에 물어볼 질문 | 현장 기준 |",
+        "|---|---|---|",
+        "| 주차와 사이트 거리 | 짐을 몇 번 옮겨야 하나 | 왕복 이동이 짧고 길이 단단해야 한다 |",
+        "| 경사와 바닥 | 유모차, 휠체어, 카트 이동이 가능한가 | 젖어도 미끄럽지 않은지 본다 |",
+        "| 화장실 동선 | 야간 조명과 거리감은 어떤가 | 동행자 체력에 맞춰야 한다 |",
+        `| ${topic.mainKeyword} 조건 | 동행자에게 부담이 되는 지점은 무엇인가 | 사진보다 실제 이동 순서를 기준으로 본다 |`,
+      ].join("\n");
+    case "data":
+      return [
+        "| 데이터 축 | 보는 이유 | 교차 확인 |",
+        "|---|---|---|",
+        "| 공식 캠핑장 정보 | 시설과 운영 여부의 기준 | 고캠핑, 지자체 공지 |",
+        "| 날씨와 계절 | 취소와 변경 판단 | 기상청 예보와 특보 |",
+        "| 지도와 후기 | 진입로, 소음, 매장 거리 | 최근 날짜 중심으로 확인 |",
+        `| ${topic.mainKeyword} 검색어 | 글의 중복을 줄이고 의도를 분리 | 확장 키워드를 질문형으로 나눈다 |`,
+      ].join("\n");
+    case "season":
+      return [
+        "| 계절 변수 | 봐야 할 기준 | 조정 방법 |",
+        "|---|---|---|",
+        "| 온도 | 낮과 밤의 차이 | 침구와 활동 시간을 따로 잡는다 |",
+        "| 비와 바람 | 설치와 철수 난도 | 타프보다 철수 기준을 먼저 정한다 |",
+        "| 벌레와 습도 | 머무는 시간의 질 | 조명, 음식물, 배수 위치를 조정한다 |",
+        `| ${topic.expanded[0]} | 계절별로 의미가 달라짐 | 같은 장소라도 월별 후기를 분리해서 본다 |`,
+      ].join("\n");
+    default:
+      return [
+        "| 판단 기준 | 괜찮은 경우 | 다시 볼 경우 |",
+        "|---|---|---|",
+        `| ${topic.mainKeyword} 목적 | 동행자, 일정, 시설이 서로 맞음 | 한 조건만 좋아 보임 |`,
+        "| 이동과 체력 | 도착 후 바로 쉴 수 있음 | 설치 전에 지치는 일정 |",
+        "| 시설 | 필요한 것만 충분함 | 사진은 좋지만 필수 정보가 비어 있음 |",
+        "| 변경 가능성 | 취소, 대체, 철수 기준이 있음 | 강행 말고는 선택지가 없음 |",
+      ].join("\n");
+  }
+}
+
+function formatSections(topic: Topic, index: number) {
+  const sections: Record<Topic["format"], string[]> = {
+    decision: ["먼저 답하면", "선택 기준을 세우는 법", "실패가 줄어드는 현장 적용", "예약 전 마지막 질문", "마무리"],
+    checklist: ["출발 전 체크", "예약 화면에서 봐야 할 것", "현장 순서", "자주 놓치는 작은 조건", "마무리"],
+    route: ["하루 동선부터 그리기", "도착 전후 시간표", "대안 코스 만들기", "현장에서 동선 검증하기", "마무리"],
+    risk: ["위험 신호 먼저 보기", "출발을 멈추는 기준", "현장 대응 순서", "안전한 대안 고르기", "마무리"],
+    data: ["데이터로 의도 나누기", "검색어 조합 만들기", "공식 정보와 후기 교차 확인", "글감으로 바꾸는 방법", "마무리"],
+    cost: ["비용 구조부터 보기", "아껴도 되는 항목", "아끼면 안 되는 항목", "예산 초과를 막는 기록", "마무리"],
+    access: ["접근성 기준 정하기", "예약 전에 물어볼 질문", "현장 이동 순서", "동행자 부담 줄이기", "마무리"],
+    season: ["계절 변수를 먼저 보기", "예보를 읽는 기준", "장비와 활동 시간 조정", "대체 일정 준비", "마무리"],
+  };
+  const base = sections[topic.format];
+  return index % 3 === 0 ? base : index % 3 === 1 ? [base[1], base[0], base[2], base[3], base[4]] : [base[0], base[2], base[1], base[3], base[4]];
+}
+
+function formatSpecificBlock(topic: Topic) {
+  const expanded = topic.expanded.slice(0, 4).join(", ");
+  switch (topic.format) {
+    case "route":
+      return [
+        "### 3단계 시간 배치",
+        "",
+        `첫째, 출발 전에는 ${expanded}를 한꺼번에 보지 말고 장보기, 진입, 설치, 휴식으로 나눠 적는다. 둘째, 도착 직후에는 좋은 자리보다 안전한 이동선을 먼저 본다. 셋째, 다음 날 활동은 하나만 남기고 나머지는 옵션으로 둔다. 여행 목적이 커질수록 철수 시간이 밀리기 때문에 ${topic.mainKeyword} 일정은 여백이 품질을 만든다.`,
+      ].join("\n");
+    case "risk":
+      return [
+        "### 강행하지 않는 기준",
+        "",
+        `위험형 주제에서는 '가능하다'보다 '그만둬야 할 때'가 더 중요하다. ${topic.mainKeyword}에서 예보, 현장 공지, 동행자의 체력 중 하나라도 계속 나빠지면 장비를 더 챙기는 방식으로 해결하지 않는다. 이미 예약했더라도 대체 일정, 짧은 체류, 철수 순서를 먼저 정해야 한다.`,
+      ].join("\n");
+    case "cost":
+      return [
+        "### 돈보다 반복 지출을 줄이기",
+        "",
+        `캠핑 비용은 큰 장비 하나보다 작은 반복 지출에서 새는 경우가 많다. ${topic.mainKeyword}를 계획할 때는 예약비, 식재료, 이동비, 현장 구매를 따로 적고 다음 일정에 다시 쓸 수 있는 항목만 남긴다. 싸게 가는 것보다 쓸 이유가 분명한 지출만 남기는 방식이 오래 간다.`,
+      ].join("\n");
+    case "data":
+      return [
+        "### 중복 글을 피하는 키워드 분리",
+        "",
+        `데이터형 글은 같은 장소를 반복 소개하면 금방 얇아진다. ${topic.mainKeyword}를 중심으로 하나의 글에는 하나의 질문만 남긴다. 예를 들어 ${expanded}를 한 문서에 모두 밀어 넣기보다, 예약 판단, 안전 판단, 이동 판단, 비용 판단으로 분리하면 제목과 답변이 자연스럽게 달라진다.`,
+      ].join("\n");
+    case "access":
+      return [
+        "### 사진보다 이동 순서가 먼저",
+        "",
+        `접근성은 예쁜 전경 사진으로 판단하기 어렵다. ${topic.mainKeyword}에서는 주차장에서 사이트까지, 사이트에서 화장실까지, 밤에 다시 이동할 때의 조명까지 이어서 봐야 한다. 이 순서가 편하면 장비가 조금 부족해도 일정이 안정되고, 이 순서가 불편하면 좋은 시설도 피로로 바뀐다.`,
+      ].join("\n");
+    case "season":
+      return [
+        "### 같은 장소도 월별로 다르게 읽기",
+        "",
+        `계절형 주제는 장소의 장점이 그대로 유지되지 않는다. ${topic.mainKeyword}를 볼 때는 같은 캠핑장 후기라도 월, 바람, 비, 습도, 벌레 이야기를 분리한다. 여름에는 그늘과 물, 겨울에는 바람과 결로, 환절기에는 일교차가 핵심 변수다.`,
+      ].join("\n");
+    case "checklist":
+      return [
+        "### 체크리스트를 짧게 쓰는 법",
+        "",
+        `체크리스트는 길수록 좋아 보이지만 현장에서는 기억하기 어렵다. ${topic.mainKeyword}에는 '예약 전 3개, 출발 전 3개, 도착 후 3개'만 남기는 편이 실전적이다. 빠진 항목이 걱정되면 목록을 늘리기보다 사진, 공지, 문의 기록으로 근거를 남긴다.`,
+      ].join("\n");
+    default:
+      return [
+        "### 결정이 쉬워지는 한 문장",
+        "",
+        `${topic.mainKeyword}의 선택 기준을 한 문장으로 줄이면 '${topic.decisionRule}'이다. 이 문장이 너무 추상적으로 느껴지면 아직 정보가 부족한 상태다. 시설, 이동, 날씨, 비용 중 어디가 불확실한지 표시하고 그 부분만 다시 확인한다.`,
+      ].join("\n");
+  }
+}
+
+function scenarioBlock(topic: Topic, index: number) {
+  const labels = {
+    decision: "선택형 사례",
+    checklist: "체크형 사례",
+    route: "동선형 사례",
+    risk: "안전형 사례",
+    data: "분석형 사례",
+    cost: "예산형 사례",
+    access: "접근성 사례",
+    season: "계절형 사례",
+  }[topic.format];
+  const situation =
+    index % 3 === 0
+      ? "금요일 퇴근 후 출발해서 토요일 오전에 가장 오래 머무는 일정"
+      : index % 3 === 1
+        ? "아이 또는 부모님처럼 속도를 맞춰야 하는 동행자가 있는 일정"
+        : "비 예보와 취소 가능성을 함께 봐야 하는 짧은 일정";
+
+  return [
+    `### ${labels}: 이렇게 적용한다`,
+    "",
+    `${situation}이라면 ${topic.mainKeyword}를 고를 때 우선순위가 달라진다. 먼저 도착 시간을 정하고, 그 다음에 설치 난도와 화장실 동선을 본다. 마지막으로 즐길 거리를 넣는다. 많은 사람이 반대로 움직인다. 볼거리와 사진을 먼저 고르고 남은 시간에 설치와 식사를 끼워 넣는다. 그러면 일정은 풍성해 보여도 실제 현장에서는 계속 밀린다.`,
+    "",
+    `예를 들어 ${topic.expanded[0]} 조건이 좋아 보여도 진입로가 좁거나 밤 조명이 부족하면 초행자에게는 좋은 선택이 아닐 수 있다. 반대로 풍경이 평범해도 관리자가 상주하고, 물과 전기, 화장실이 가까우며, 철수 시간이 넉넉하면 첫 일정에는 더 좋은 선택이 된다. 이 차이를 제목과 본문에서 분명히 설명해야 검색 사용자가 '내 상황에 맞는 답'이라고 느낀다.`,
+    "",
+    `실전에서는 아래 순서로 한 번 더 줄인다.`,
+    "",
+    `- 반드시 필요한 조건 하나: ${topic.mainKeyword}`,
+    `- 있으면 좋은 조건 하나: ${topic.expanded[1] ?? topic.expanded[0]}`,
+    `- 포기해도 되는 조건 하나: 사진, 유행, 과한 장비, 무리한 관광 중 하나`,
+    `- 마지막 확인: ${topic.caution}`,
+    "",
+    `이렇게 쓰면 글도 덜 반복된다. 같은 캠핑 주제라도 어떤 독자는 비용을 묻고, 어떤 독자는 안전을 묻고, 어떤 독자는 이동을 묻는다. ${topic.mainKeyword} 글은 그중 하나의 질문에 깊게 답해야 한다. 그래야 GEO 관점에서는 요약 답변으로 뽑히기 쉽고, AEO 관점에서는 질문형 검색에도 대응할 수 있다.`,
+  ].join("\n");
+}
+
+function renderVariedBody(topic: Topic, index: number) {
+  const sections = formatSections(topic, index);
+  const sourceNames = topic.sourceKeys.map((key) => SOURCES[key].name).join(", ");
+  const related = topic.expanded.join(", ");
+  const opener =
+    index % 4 === 0
+      ? `${topic.mainKeyword}를 검색하는 사람은 보통 장소 추천보다 '이번 일정이 무리 없이 굴러갈까'를 먼저 걱정한다.`
+      : index % 4 === 1
+        ? `${topic.title.replace(/\s+\?\?.*$/, "")}라는 주제는 보기보다 판단 순서가 중요하다.`
+        : index % 4 === 2
+          ? `좋은 캠핑은 유명한 이름보다 조건이 맞는 순간에 가까워진다. ${topic.mainKeyword}도 마찬가지다.`
+          : `${topic.mainKeyword}에서 실패를 줄이는 방법은 더 많이 챙기는 것이 아니라 먼저 버릴 조건을 정하는 것이다.`;
+
+  const body = [
+    `> ${topic.subtitle}`,
+    "",
+    `## ${sections[0]}`,
+    "",
+    `${opener} ${topic.angle} 이 글은 ${related}를 한꺼번에 나열하지 않고, 실제 예약과 이동에서 판단이 필요한 순서로 정리한다. 근거를 확인할 때는 ${sourceNames} 같은 공식 정보를 우선하고, 후기는 최근 날짜와 현장 상황이 드러난 글만 참고하는 편이 낫다.`,
+    "",
+    colorCallout(topic, index, "answer"),
+    "",
+    `검색 결과에서 가장 먼저 보이는 글이 항상 내 일정에 맞는 것은 아니다. ${topic.readerProblem} 그래서 ${topic.mainKeyword}를 볼 때는 장소 이름, 사진, 가격을 한 번에 결정하지 말고 목적과 제약을 분리해야 한다. 이 방식은 SEO 관점에서도 유리하다. 제목에는 메인 키워드가 분명히 들어가고, 본문은 ${topic.expanded.slice(0, 3).join(", ")} 같은 확장 키워드를 자연스럽게 답변 속에 녹일 수 있기 때문이다.`,
+    "",
+    formatTable(topic),
+    "",
+    `## ${sections[1]}`,
+    "",
+    `${topic.decisionRule} 이 기준을 실제로 쓰려면 숫자나 질문으로 바꿔야 한다. 예를 들어 이동 시간은 '가깝다'가 아니라 도착 후 설치까지 몇 분이 필요한지로 바꾼다. 시설은 '좋다'가 아니라 밤에 다시 이동할 수 있는지, 비가 와도 사용할 수 있는지, 동행자가 혼자 다녀와도 불안하지 않은지로 바꾼다.`,
+    "",
+    `예약 전에는 다음 네 가지를 한 줄씩 적는다.`,
+    "",
+    `- 목적: ${topic.intent}`,
+    `- 메인 키워드: ${topic.mainKeyword}`,
+    `- 확장 키워드: ${topic.expanded.slice(0, 4).join(", ")}`,
+    `- 공식 확인처: ${sourceNames}`,
+    "",
+    `${topic.fieldExample} 이 예시는 단순한 경험담이 아니라 판단 단위를 작게 쪼개는 방법이다. 현장에서 불편이 생겼을 때 '운이 나빴다'로 끝내지 않고, 어떤 조건을 다음 예약에서 제외할지 정할 수 있다.`,
+    "",
+    colorCallout(topic, index, "note"),
+    "",
+    `## ${sections[2]}`,
+    "",
+    formatSpecificBlock(topic),
+    "",
+    `현장에서는 계획표를 완벽하게 지키는 것보다 순서를 덜 흔드는 것이 중요하다. 도착 직후에는 사진을 찍기보다 바닥, 배수, 화장실, 주차, 조명 위치를 먼저 본다. 식사 준비는 짐을 모두 풀기 전에 최소한의 동선만 확보한 상태에서 시작한다. 철수 전날 밤에는 쓰레기, 젖은 장비, 남은 음식, 다음 날 날씨를 미리 나눠 둔다.`,
+    "",
+    `이 순서는 ${topic.mainKeyword}뿐 아니라 대부분의 캠핑 일정에 적용된다. 다만 글의 유형에 따라 강조점은 달라진다. 위험형 글은 철수와 취소 기준을 더 앞에 둬야 하고, 비용형 글은 현장 구매를 줄이는 목록이 먼저 와야 한다. 접근성 글은 시설 사진보다 이동 순서를 먼저 설명해야 하며, 루트형 글은 관광지를 많이 넣는 대신 쉬는 시간을 남겨야 한다.`,
+    "",
+    scenarioBlock(topic, index),
+    "",
+    `### 빠른 자체 점검`,
+    "",
+    `1. 이 일정에서 포기해도 되는 활동은 무엇인가?`,
+    `2. 문제가 생기면 차로 바로 돌아갈 수 있는가?`,
+    `3. 공식 공지와 최근 후기가 서로 충돌하지 않는가?`,
+    `4. ${topic.expanded[0]} 조건이 제목뿐 아니라 실제 본문 판단에도 반영됐는가?`,
+    "",
+    `## ${sections[3]}`,
+    "",
+    colorCallout(topic, index, "caution"),
+    "",
+    `주의할 점은 불안을 키우려는 것이 아니라 선택지를 남기기 위한 것이다. ${topic.caution} 특히 날씨, 법적 허용 여부, 운영 공지, 현장 통제는 개인 후기보다 우선한다. 오래된 후기 하나만 믿고 움직이면 현재 운영 상태와 맞지 않을 수 있다. 출발 전날과 당일 아침에 한 번씩 다시 확인하는 습관이 필요하다.`,
+    "",
+    `예약 화면에서 운영자에게 물어볼 질문도 구체적이어야 한다. '괜찮나요?'보다 '밤 10시 이후 차량 이동이 가능한가요?', '비가 오면 이 사이트에 물이 고이나요?', '전기 사용량 제한이 있나요?', '화장실까지 실제 도보 거리는 어느 정도인가요?'처럼 행동이 바뀌는 질문이 좋다. 이런 질문은 AEO 관점에서도 답변형 문장으로 남기기 쉬워 검색 의도에 더 잘 맞는다.`,
+    "",
+    `### 피해야 할 결정`,
+    "",
+    `- 사진이 좋아 보여서 필수 조건 확인을 건너뛰는 결정`,
+    `- 무료 또는 저렴하다는 이유로 허용 여부를 확인하지 않는 결정`,
+    `- 동행자의 체력과 수면 조건을 낙관적으로 보는 결정`,
+    `- ${topic.mainKeyword}와 상관없는 장비 구매로 문제를 해결하려는 결정`,
+    "",
+    `## ${sections[4]}`,
+    "",
+    `${topic.mainKeyword}는 하나의 장소를 맞히는 문제가 아니라 내 일정에 맞지 않는 조건을 지워 가는 과정이다. ${topic.cta}`,
+    "",
+    `마지막으로 기록을 남기면 다음 선택이 훨씬 쉬워진다. 만족한 이유보다 불편했던 이유를 더 구체적으로 적는다. 그늘, 화장실 거리, 소음, 바람, 벌레, 진입로, 매점, 철수 난도처럼 작은 항목을 기록하면 다음에는 같은 실수를 반복하지 않는다. 이 글의 기준을 그대로 복사하기보다 내 동행자, 계절, 예산에 맞춰 줄이는 것이 가장 실전적인 활용법이다.`,
+    "",
+    `### 함께 보면 좋은 글`,
+    "",
+    topic.internal.map((link) => `- [${link.text}](${link.href})`).join("\n"),
+    "",
+    `### 참고 출처`,
+    "",
+    topic.sourceKeys.map((key) => `- [${SOURCES[key].name}](${SOURCES[key].url})`).join("\n"),
+  ].join("\n");
+
+  return mdEscape(body);
+}
+
 function renderBody(topic: Topic, index: number) {
   const sourceNames = topic.sourceKeys.map((key) => SOURCES[key].name).join(", ");
   const related = topic.expanded.join(", ");
@@ -357,6 +647,8 @@ function renderBody(topic: Topic, index: number) {
   return mdEscape(body);
 }
 
+void renderBody;
+
 function faqFor(topic: Topic) {
   return [
     { q: `${topic.mainKeyword}에서 가장 먼저 확인할 것은 무엇인가요?`, a: topic.decisionRule },
@@ -370,7 +662,7 @@ function meta(topic: Topic) {
 }
 
 function draftFor(topic: Topic, index: number) {
-  const bodyMarkdown = renderBody(topic, index);
+  const bodyMarkdown = renderVariedBody(topic, index);
   const scheduledAt = scheduleFor(index);
   const wordCount = bodyMarkdown.split(/\s+/).filter(Boolean).length;
   return {
