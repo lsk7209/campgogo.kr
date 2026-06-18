@@ -244,6 +244,96 @@ export default async function HomePage() {
         </section>
 
         {/* 추천 야영지 */}
+        <section
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "36px 24px 0",
+          }}
+        >
+          <div
+            style={{
+              border: "1px solid var(--color-gray-200)",
+              borderRadius: "var(--radius-lg)",
+              background: "#fff",
+              padding: "24px",
+            }}
+          >
+            <h2 style={{ fontSize: "20px", fontWeight: 800, margin: "0 0 10px" }}>
+              캠핑장 정보를 확인할 때 보는 공식 자료
+            </h2>
+            <p style={{ color: "var(--color-gray-600)", lineHeight: 1.75, margin: "0 0 16px" }}>
+              캠핑고고는 예약 가능 여부를 보장하는 서비스가 아니라, 공공 데이터와 현장 확인이 필요한 항목을
+              한 번에 비교하도록 돕는 탐색 서비스입니다. 방문 전에는 운영 주체, 기상 상황, 산불·통제 공지,
+              예약 페이지를 함께 확인해야 합니다.
+            </p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+              <a href="https://www.gocamping.or.kr" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-forest-700)", fontWeight: 700 }}>
+                고캠핑
+              </a>
+              <a href="https://www.weather.go.kr" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-forest-700)", fontWeight: 700 }}>
+                기상청
+              </a>
+              <a href="https://www.foresttrip.go.kr" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-forest-700)", fontWeight: 700 }}>
+                숲나들e
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <section
+          style={{
+            maxWidth: "960px",
+            margin: "0 auto",
+            padding: "44px 24px 0",
+          }}
+        >
+          <div
+            style={{
+              display: "grid",
+              gap: "22px",
+              color: "var(--color-gray-700)",
+              fontSize: "15px",
+              lineHeight: 1.8,
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "22px",
+                fontWeight: 800,
+                color: "var(--color-gray-900)",
+                margin: 0,
+              }}
+            >
+              캠핑장 후보를 고를 때 먼저 확인할 기준
+            </h2>
+            <p style={{ margin: 0 }}>
+              캠핑고고의 홈 화면은 단순한 예약 바로가기보다 야영지 후보를 좁히는 순서를 먼저 안내합니다.
+              캠핑장은 같은 지역에 있어도 운영 주체, 계절, 차량 진입, 화장실 거리, 취사 가능 여부, 반려동물
+              동반 규정에 따라 실제 만족도가 크게 달라집니다. 그래서 첫 선택 기준은 후기 점수가 아니라
+              공공 데이터에 남아 있는 기본 정보와 방문 전 재확인이 가능한 항목입니다.
+            </p>
+            <p style={{ margin: 0 }}>
+              무료 야영지나 노지 캠핑 후보는 특히 보수적으로 봐야 합니다. 무료로 알려진 장소라도 계절 통제,
+              산불 조심 기간, 하천 수위, 지자체 공지, 사유지 경계에 따라 이용 가능 여부가 달라질 수 있습니다.
+              캠핑고고는 이런 불확실성을 줄이기 위해 고캠핑, 공공데이터포털, 기상청, 숲나들e 같은 공식 경로를
+              함께 확인하도록 안내합니다.
+            </p>
+            <p style={{ margin: 0 }}>
+              차박 가능 여부도 한 문장으로 단정하지 않습니다. 명시적으로 허용된 곳, 허용으로 추정되는 곳,
+              정보가 부족한 곳, 금지 가능성이 큰 곳을 구분해서 읽어야 합니다. 현장 안내판이나 관리소 답변이
+              최신 기준이므로, 출발 전에는 주소와 운영기관을 다시 확인하고 쓰레기 처리, 취사 제한, 야간 소음
+              규정을 함께 점검하는 것이 안전합니다.
+            </p>
+            <p style={{ margin: 0 }}>
+              이 사이트의 정보는 캠핑 계획을 시작하는 참고 자료입니다. 예약 가능 여부, 실시간 잔여 데크,
+              현장 요금, 시설 보수, 임시 휴장, 폭우 이후 접근 통제는 원본 기관 공지와 현장 상황을 우선합니다.
+              독자는 홈에서 지역·테마·시즌·조건 검색으로 후보를 좁힌 뒤, 상세 페이지와 공식 출처를 같이 보며
+              최종 방문 여부를 결정하는 흐름으로 이용하면 됩니다.
+            </p>
+          </div>
+        </section>
+
         {featured.length > 0 && (
           <section
             style={{

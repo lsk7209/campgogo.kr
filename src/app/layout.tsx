@@ -3,6 +3,28 @@ import Script from "next/script";
 import "./globals.css";
 
 const GA4_ID = "G-1E6KZFZNS6";
+const SITE_URL = "https://campgogo.kr";
+const SITE_NAME = "campgogo.kr";
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: SITE_NAME,
+  url: SITE_URL,
+  inLanguage: "ko-KR",
+  publisher: {
+    "@type": "Organization",
+    name: SITE_NAME,
+    url: SITE_URL,
+  },
+};
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: SITE_NAME,
+  url: SITE_URL,
+};
 
 export const metadata: Metadata = {
   title: {
@@ -43,6 +65,18 @@ export default function RootLayout({
   return (
     <html lang="ko" className="h-full antialiased">
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteJsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
         {/* 다크모드 flash 방지: hydration 전에 class 복원 */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('cg-theme');if(t==='dark'||(t===null&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()` }} />
         <link rel="alternate" type="application/rss+xml" title="캠핑고고 블로그" href="/feed.xml" />

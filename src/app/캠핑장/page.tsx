@@ -244,6 +244,34 @@ export default async function CampsiteIndexPage() {
           </section>
 
           {/* 적합도 높은 야영지 */}
+          <section style={{ marginBottom: "48px" }}>
+            <h2
+              style={{
+                fontSize: "20px",
+                fontWeight: 700,
+                color: "var(--color-gray-900)",
+                marginBottom: "14px",
+              }}
+            >
+              목록을 해석할 때 확인할 기준
+            </h2>
+            <p style={{ color: "var(--color-gray-600)", lineHeight: 1.75, marginBottom: 16 }}>
+              캠핑장 목록은 위치와 기본 조건을 빠르게 비교하기 위한 색인입니다. 실제 이용 전에는 예약 가능 여부,
+              반려동물·차박 허용 여부, 화기 사용 제한, 기상 특보, 산불 통제를 운영처나 공식 안내에서 다시 확인해야 합니다.
+            </p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+              <a href="https://www.gocamping.or.kr" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-forest-700)", fontWeight: 700 }}>
+                고캠핑 공식 정보
+              </a>
+              <a href="https://www.weather.go.kr" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-forest-700)", fontWeight: 700 }}>
+                기상청 날씨 확인
+              </a>
+              <a href="https://www.foresttrip.go.kr" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-forest-700)", fontWeight: 700 }}>
+                숲나들e 예약 확인
+              </a>
+            </div>
+          </section>
+
           {recent.length > 0 && (
             <section>
               <div
