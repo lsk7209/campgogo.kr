@@ -143,6 +143,20 @@ export default async function CampsiteIndexPage() {
             >
               8,000곳+ 야영지를 지역·테마·시즌·조건으로 찾아보세요
             </p>
+            <p
+              style={{
+                maxWidth: "760px",
+                fontSize: "14.5px",
+                lineHeight: 1.8,
+                color: "var(--color-forest-100)",
+                margin: "14px 0 0",
+              }}
+            >
+              이 목록은 예약 버튼을 누르기 전에 공공 데이터 출처, 무료 여부, 차박 가능성, 계절 운영,
+              현장 통제 가능성을 먼저 확인하도록 돕는 색인입니다. 같은 지역의 야영지도 관리 주체,
+              편의시설, 주차 동선, 반려동물 규정, 화기 사용 기준이 다르므로 방문 전 공식 안내와 현장
+              관리소 공지를 함께 확인해야 합니다.
+            </p>
           </div>
         </div>
 
