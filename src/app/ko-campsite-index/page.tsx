@@ -141,6 +141,20 @@ export default async function CampsiteIndexPage() {
             >
               8,000곳+ 야영지를 지역·테마·시즌·조건으로 찾아보세요
             </p>
+            <p
+              style={{
+                maxWidth: "820px",
+                margin: "18px 0 0",
+                fontSize: "15px",
+                lineHeight: 1.8,
+                color: "var(--color-forest-50)",
+              }}
+            >
+              이 목록은 예약 버튼을 누르기 전에 공공 데이터 출처, 무료 여부, 차박 가능성, 계절 운영,
+              현장 통제 가능성을 먼저 확인하도록 돕는 색인입니다. 같은 지역의 야영지도 관리 주체,
+              예약 방식, 차량 진입, 화장실 거리, 취사 가능 여부, 반려동물 동반 규정이 다르므로
+              목록에서 후보를 좁힌 뒤 공식 예약처와 현장 안내를 다시 확인하는 흐름을 권장합니다.
+            </p>
           </div>
         </div>
 
@@ -164,6 +178,38 @@ export default async function CampsiteIndexPage() {
             >
               원하는 방법으로 찾기
             </h2>
+            <div
+              style={{
+                marginBottom: "24px",
+                padding: "20px",
+                border: "1px solid var(--color-gray-200)",
+                borderRadius: "var(--radius-lg)",
+                background: "#fff",
+                color: "var(--color-gray-700)",
+                lineHeight: 1.8,
+              }}
+            >
+              <h3
+                style={{
+                  margin: "0 0 10px",
+                  fontSize: "17px",
+                  color: "var(--color-gray-900)",
+                }}
+              >
+                캠핑장 목록을 읽는 기준
+              </h3>
+              <p style={{ margin: "0 0 10px" }}>
+                캠핑장 목록은 위치와 기본 조건을 빠르게 비교하기 위한 색인입니다. 실제 이용 전에는
+                예약 가능 여부, 이용 요금, 입퇴실 시간, 전기 사용 가능 여부, 장작 사용 제한,
+                반려동물 동반, 우천 시 통제 여부를 공식 안내에서 다시 확인해야 합니다.
+              </p>
+              <p style={{ margin: 0 }}>
+                무료 야영지나 노지 캠핑 후보는 특히 보수적으로 봐야 합니다. 무료로 알려진 장소라도
+                계절 통제, 사유지 경계, 취사 금지, 야간 주차 제한, 쓰레기 반출 규정이 있을 수 있습니다.
+                캠핑고고는 공공 데이터와 현장 확인 기준을 함께 보여 주지만 최종 방문 판단은 최신
+                공지와 현장 표지판을 기준으로 해야 합니다.
+              </p>
+            </div>
             <div
               style={{
                 display: "grid",
