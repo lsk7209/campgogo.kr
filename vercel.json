@@ -1,5 +1,8 @@
 {
   "framework": "nextjs",
+  "functions": {
+    "src/app/api/**/*.ts": { "maxDuration": 30 }
+  },
   "crons": [
     { "path": "/api/cron/enrich-ai",          "schedule": "0 */3 * * *" },
     { "path": "/api/cron/publish",             "schedule": "0 21 * * *"  },
