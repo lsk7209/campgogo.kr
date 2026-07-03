@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import CoupangAffiliateBanner from "@/components/affiliate/CoupangAffiliateBanner";
 import "./globals.css";
 
 const GA4_ID = "G-1E6KZFZNS6";
@@ -85,6 +86,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col">
         {children}
+        <CoupangAffiliateBanner />
         {/* AdSense — afterInteractive: LCP·TBT 보호 */}
         <Script
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3050601904412736"
