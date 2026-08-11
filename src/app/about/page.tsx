@@ -5,6 +5,7 @@ import { StaticPageLayout } from "@/components/static-page-layout";
 export const metadata: Metadata = {
   title: "소개",
   description: "캠핑고고는 예약 앱이 못 보여주는 공공·저렴·차박 야영지를 찾아주는 사이트입니다.",
+  alternates: { canonical: "https://campgogo.kr/about" },
 };
 
 export default function AboutPage() {
