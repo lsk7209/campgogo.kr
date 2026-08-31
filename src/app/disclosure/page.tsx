@@ -5,6 +5,7 @@ import { StaticPageLayout } from "@/components/static-page-layout";
 export const metadata: Metadata = {
   title: "광고·제휴 정책",
   description: "캠핑고고의 광고 및 제휴 링크 운영 방식과 독립성 보호 정책.",
+  alternates: { canonical: "https://campgogo.kr/disclosure" },
 };
 
 export default function DisclosurePage() {

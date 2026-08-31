@@ -1,9 +1,18 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { cookies, headers } from "next/headers";
 import { db } from "@/lib/db/client";
 import { pages, campsites, aiBudget, userReports } from "@/lib/db/schema";
 import { eq, desc, sql } from "drizzle-orm";
 import { SiteHeader } from "@/components/site-header";
+import { ADMIN_SESSION_COOKIE, isAdminAuthorized } from "@/lib/admin-session";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "관리자 품질 리뷰",
+  robots: { index: false, follow: false },
+};
 
 type PageRow = {
   id: string;
@@ -21,19 +30,20 @@ type PageRow = {
 export default async function AdminReviewPage({
   searchParams,
 }: {
-  searchParams: Promise<{ token?: string; filter?: string }>;
+  searchParams: Promise<{ filter?: string }>;
 }) {
   const sp = await searchParams;
 
-  // 토큰 체크 (쿼리 파라미터로)
-  const isAuth = sp.token === (process.env.ADMIN_API_TOKEN ?? "");
-  if (!isAuth) {
-    return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "sans-serif" }}>
-        <p style={{ color: "#999" }}>인증 필요: ?token=YOUR_ADMIN_API_TOKEN</p>
-      </div>
-    );
-  }
+  // URL에는 자격 증명을 남기지 않는다. 자동화는 Bearer, 브라우저는 HttpOnly 세션을 사용한다.
+  const adminToken = process.env.ADMIN_API_TOKEN;
+  const [headerStore, cookieStore] = await Promise.all([headers(), cookies()]);
+  const isAuth = isAdminAuthorized({
+    adminToken,
+    authorization: headerStore.get("authorization"),
+    session: cookieStore.get(ADMIN_SESSION_COOKIE)?.value,
+    version: process.env.ADMIN_SESSION_VERSION ?? "v1",
+  });
+  if (!isAuth) notFound();
 
   const filter = sp.filter ?? "quality_passed";
 
@@ -95,6 +105,12 @@ export default async function AdminReviewPage({
         <p style={{ fontSize: "13px", color: "var(--color-gray-400)", marginBottom: "28px" }}>
           AI 보강 완료 페이지를 검토하고 발행 여부를 결정합니다. 발행은 <code>/api/cron/publish</code> cron이 자동 처리합니다.
         </p>
+        <form action="/api/admin/session" method="post" style={{ marginBottom: "20px" }}>
+          <input type="hidden" name="action" value="logout" />
+          <button type="submit" style={{ padding: "6px 12px", borderRadius: "8px", cursor: "pointer" }}>
+            로그아웃
+          </button>
+        </form>
 
         {/* 통계 카드 */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "12px", marginBottom: "28px" }}>
@@ -125,7 +141,7 @@ export default async function AdminReviewPage({
           {FILTERS.map((f) => (
             <a
               key={f.value}
-              href={`?token=${sp.token}&filter=${f.value}`}
+              href={`?filter=${f.value}`}
               style={{
                 padding: "6px 14px", borderRadius: "999px", fontSize: "13px", fontWeight: 600,
                 textDecoration: "none",

@@ -5,6 +5,7 @@ import { StaticPageLayout } from "@/components/static-page-layout";
 export const metadata: Metadata = {
   title: "데이터 라이선스",
   description: "캠핑고고가 사용하는 공공데이터의 출처와 라이선스 정보.",
+  alternates: { canonical: "https://campgogo.kr/data-license" },
 };
 
 export default function DataLicensePage() {

@@ -17,7 +17,7 @@ export default function MapPage() {
       <main className="flex-1">
         <MapView />
       </main>
-      <SiteFooter />
+      <SiteFooter showMonetization />
     </>
   );
 }

@@ -6,7 +6,7 @@ import { SiteFooter } from "@/components/site-footer";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "시즌별 추천 야영지 | 캠핑고고",
+  title: "시즌별 추천 야영지",
   description:
     "봄·여름·가을·겨울 시즌별 캠핑 추천 야영지 모음. 1월부터 12월까지 월별 최적 야영지를 안내합니다.",
   alternates: { canonical: "https://campgogo.kr/시즌" },
@@ -111,7 +111,7 @@ export default function SeasonIndexPage() {
           </section>
         </div>
       </main>
-      <SiteFooter />
+      <SiteFooter showMonetization />
     </>
   );
 }

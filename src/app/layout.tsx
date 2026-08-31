@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import CoupangAffiliateBanner from "@/components/affiliate/CoupangAffiliateBanner";
 import "./globals.css";
 
 const GA4_ID = "G-1E6KZFZNS6";
@@ -81,18 +80,10 @@ export default function RootLayout({
         {/* 다크모드 flash 방지: hydration 전에 class 복원 */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('cg-theme');if(t==='dark'||(t===null&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()` }} />
         <link rel="alternate" type="application/rss+xml" title="캠핑고고 블로그" href="/feed.xml" />
-        <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
       </head>
       <body className="min-h-full flex flex-col">
         {children}
-        <CoupangAffiliateBanner />
-        {/* AdSense — afterInteractive: LCP·TBT 보호 */}
-        <Script
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3050601904412736"
-          strategy="afterInteractive"
-          crossOrigin="anonymous"
-        />
         {/* Google Analytics 4 */}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}

@@ -9,9 +9,8 @@ const SITEMAPS = [
 ];
 
 export async function GET(): Promise<Response> {
-  const today = new Date().toISOString().slice(0, 10);
   const entries = SITEMAPS.map(
-    (loc) => `  <sitemap>\n    <loc>${loc}</loc>\n    <lastmod>${today}</lastmod>\n  </sitemap>`
+    (loc) => `  <sitemap>\n    <loc>${loc}</loc>\n  </sitemap>`
   );
 
   const xml = [

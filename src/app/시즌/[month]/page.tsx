@@ -151,10 +151,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { month } = await params;
   const num = parseInt(month, 10) as MonthNum;
-  if (isNaN(num) || num < 1 || num > 12) return {};
+  if (isNaN(num) || num < 1 || num > 12) notFound();
   const info = MONTH_INFO[num];
   return {
-    title: `${info.korean} 추천 야영지 | 캠핑고고`,
+    title: `${info.korean} 추천 야영지`,
     description: `${info.korean}(${info.season}) 캠핑 추천 야영지 모음 — ${info.description}. 공공·차박·저렴 야영지를 한눈에.`,
     alternates: { canonical: `/시즌/${month}` },
   };
@@ -491,7 +491,7 @@ export default async function MonthSeasonPage({
           </div>
         </div>
       </main>
-      <SiteFooter />
+      <SiteFooter showMonetization />
     </>
   );
 }

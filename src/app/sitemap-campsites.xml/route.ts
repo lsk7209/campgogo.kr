@@ -1,7 +1,7 @@
 import { db } from "@/lib/db/client";
-import { campsites } from "@/lib/db/schema";
+import { campsites, pages } from "@/lib/db/schema";
 import { cleanSitemapLoc, siteUrl } from "@/lib/seo/site-url";
-import { eq } from "drizzle-orm";
+import { and, eq, isNotNull, lte } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 3600;
@@ -17,30 +17,51 @@ function urlEntry(loc: string, lastmod: string) {
   return `  <url>\n    <loc>${esc(loc)}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>`;
 }
 
+function publishedUrl(value: string): string | null {
+  try {
+    const base = new URL(siteUrl());
+    const candidate = new URL(cleanSitemapLoc(value), base);
+    if (candidate.origin !== base.origin) return null;
+    if (!candidate.pathname.startsWith("/캠핑장/")) return null;
+    if (candidate.search || candidate.hash) return null;
+    return candidate.toString();
+  } catch {
+    return null;
+  }
+}
+
 export async function GET(): Promise<Response> {
-  const today = new Date().toISOString().slice(0, 10);
   const entries: string[] = [];
 
   try {
-    const publicCampsites = await db
+    const publishedPages = await db
       .select({
-        id: campsites.id,
-        sido: campsites.sido,
-        gungu: campsites.gungu,
-        updatedAt: campsites.updatedAt,
+        url: pages.url,
+        dateModified: pages.dateModified,
+        datePublished: pages.datePublished,
+        publishedAt: pages.publishedAt,
+        updatedAt: pages.updatedAt,
       })
-      .from(campsites)
-      .where(eq(campsites.isPublic, true));
+      .from(pages)
+      .innerJoin(campsites, eq(pages.campsiteId, campsites.id))
+      .where(and(
+        eq(pages.status, "published"),
+        isNotNull(pages.campsiteId),
+        isNotNull(pages.publishedAt),
+        lte(pages.publishedAt, new Date()),
+      ));
 
-    for (const c of publicCampsites) {
-      const lastmod = c.updatedAt
-        ? c.updatedAt.toISOString().slice(0, 10)
-        : today;
-      const path = `/캠핑장/${encodeURIComponent(c.sido)}/${encodeURIComponent(c.gungu ?? "")}/${encodeURIComponent(c.id)}`;
-      entries.push(urlEntry(siteUrl(path), lastmod));
+    for (const page of publishedPages) {
+      const loc = publishedUrl(page.url);
+      if (!loc || !page.publishedAt) continue;
+      const lastmod = page.dateModified
+        ?? page.datePublished
+        ?? page.updatedAt?.toISOString().slice(0, 10)
+        ?? page.publishedAt.toISOString().slice(0, 10);
+      entries.push(urlEntry(loc, lastmod));
     }
   } catch {
-    /* DB 없을 시 빈 sitemap 반환 */
+    /* DB를 확인할 수 없으면 미발행 URL을 추측하지 않고 빈 sitemap을 반환한다. */
   }
 
   const xml = [

@@ -4,6 +4,7 @@ import { StaticPageLayout } from "@/components/static-page-layout";
 export const metadata: Metadata = {
   title: "개인정보처리방침",
   description: "캠핑고고의 개인정보 수집·이용·보관 방침.",
+  alternates: { canonical: "https://campgogo.kr/privacy" },
 };
 
 export default function PrivacyPage() {

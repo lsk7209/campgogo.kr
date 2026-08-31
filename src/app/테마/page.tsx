@@ -6,7 +6,7 @@ import { SiteFooter } from "@/components/site-footer";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "테마별 야영지 | 캠핑고고",
+  title: "테마별 야영지",
   description:
     "차박, 공공, 무료, 가성비, 계곡, 산, 해안 등 7가지 테마별로 엄선한 야영지를 찾아보세요.",
   alternates: {
@@ -220,7 +220,7 @@ export default function ThemeIndexPage() {
           </div>
         </div>
       </main>
-      <SiteFooter />
+      <SiteFooter showMonetization />
     </>
   );
 }

@@ -21,6 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ sido: str
   const g = decodeURIComponent(gungu);
   const rows = await db.select({ id: campsites.id }).from(campsites)
     .where(and(eq(campsites.sido, s), eq(campsites.gungu, g)));
+  if (rows.length === 0) notFound();
   return buildRegionMeta(s, rows.length, g);
 }
 
@@ -95,7 +96,7 @@ export default async function GunguPage({ params }: { params: Promise<{ sido: st
           </div>
         </div>
       </main>
-      <SiteFooter />
+      <SiteFooter showMonetization />
     </>
   );
 }

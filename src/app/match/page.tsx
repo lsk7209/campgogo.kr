@@ -13,7 +13,7 @@ export default function MatchPage() {
     <>
       <SiteHeader activeNav="/match" />
       <main className="flex-1"><MatchingTool /></main>
-      <SiteFooter />
+      <SiteFooter showMonetization />
     </>
   );
 }

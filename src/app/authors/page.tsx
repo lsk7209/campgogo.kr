@@ -5,6 +5,7 @@ import { StaticPageLayout } from "@/components/static-page-layout";
 export const metadata: Metadata = {
   title: "가상 저자 안내",
   description: "캠핑고고의 콘텐츠 톤·큐레이션 페르소나 안내. 이 페르소나는 실재 인물이 아닙니다.",
+  alternates: { canonical: "https://campgogo.kr/authors" },
 };
 
 export default function AuthorsPage() {

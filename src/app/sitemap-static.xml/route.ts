@@ -2,6 +2,7 @@ import { cleanSitemapLoc, siteUrl } from "@/lib/seo/site-url";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 86400;
+const STATIC_LASTMOD = "2026-08-31";
 
 const STATIC_PAGES = [
   { path: "/", freq: "daily", pri: "1.0" },
@@ -32,11 +33,10 @@ function urlEntry(loc: string, lastmod: string, freq: string, pri: string) {
 }
 
 export async function GET(): Promise<Response> {
-  const today = new Date().toISOString().slice(0, 10);
   const entries: string[] = [];
 
   for (const { path, freq, pri } of STATIC_PAGES) {
-    entries.push(urlEntry(siteUrl(path), today, freq, pri));
+    entries.push(urlEntry(siteUrl(path), STATIC_LASTMOD, freq, pri));
   }
 
   const xml = [

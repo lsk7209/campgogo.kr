@@ -5,6 +5,7 @@ import { StaticPageLayout } from "@/components/static-page-layout";
 export const metadata: Metadata = {
   title: "편집 정책",
   description: "캠핑고고의 콘텐츠 작성 원칙, 데이터 검증 방식, 오류 수정 정책.",
+  alternates: { canonical: "https://campgogo.kr/editorial-policy" },
 };
 
 export default function EditorialPolicyPage() {

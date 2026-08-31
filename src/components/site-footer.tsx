@@ -1,9 +1,16 @@
 import Link from "next/link";
+import Script from "next/script";
+import CoupangAffiliateBanner from "./affiliate/CoupangAffiliateBanner";
 import { CampingLogo } from "./camping-logo";
 
-export function SiteFooter() {
+export function SiteFooter({
+  showMonetization = false,
+}: {
+  showMonetization?: boolean;
+}) {
   return (
-    <footer style={{ background: "var(--color-forest-800)", color: "var(--color-forest-100)", marginTop: "80px" }}>
+    <>
+      <footer style={{ background: "var(--color-forest-800)", color: "var(--color-forest-100)", marginTop: "80px" }}>
       <div className="max-w-[1200px] mx-auto px-6">
         {/* Top */}
         <div className="footer-top-grid py-14 pb-10">
@@ -70,7 +77,19 @@ export function SiteFooter() {
           </span>
         </div>
       </div>
-    </footer>
+      </footer>
+      {showMonetization && (
+        <>
+          <CoupangAffiliateBanner />
+          <Script
+            id="adsense-loader"
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3050601904412736"
+            strategy="afterInteractive"
+            crossOrigin="anonymous"
+          />
+        </>
+      )}
+    </>
   );
 }
 

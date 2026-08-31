@@ -58,13 +58,14 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
+  let post: Awaited<ReturnType<typeof getBlogPostBySlug>>;
   try {
-    const post = await getBlogPostBySlug(slug);
-    if (!post) return { title: "블로그 | 캠핑고고" };
-    return buildBlogMeta({ title: post.title, slug: post.slug, metaDescription: post.metaDescription, datePublished: post.datePublished });
+    post = await getBlogPostBySlug(slug);
   } catch {
-    return { title: "블로그 | 캠핑고고" };
+    return { title: "블로그" };
   }
+  if (!post) notFound();
+  return buildBlogMeta({ title: post.title, slug: post.slug, metaDescription: post.metaDescription, datePublished: post.datePublished });
 }
 
 // ── TOC 추출 ─────────────────────────────────────────────
@@ -325,7 +326,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooter showMonetization />
     </>
   );
 }

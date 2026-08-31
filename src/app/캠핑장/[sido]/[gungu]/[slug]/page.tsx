@@ -80,9 +80,9 @@ export async function generateMetadata({
   try {
     campsite = await getCampsite(decodeURIComponent(slug));
   } catch {
-    return { title: "캠핑장 정보 | 캠핑고고" };
+    return { title: "캠핑장 정보" };
   }
-  if (!campsite) return { title: "캠핑장 정보 | 캠핑고고" };
+  if (!campsite) notFound();
 
   const meta = buildCampsiteMeta(campsite);
   const page = await getPageRecord(campsite.id);
@@ -92,8 +92,9 @@ export async function generateMetadata({
     if (meta.openGraph) (meta.openGraph as Record<string, unknown>).description = page.metaDescription;
   }
   if (page?.title) {
-    meta.title = `${page.title} | 캠핑고고`;
+    meta.title = page.title;
     if (meta.openGraph) (meta.openGraph as Record<string, unknown>).title = `${page.title} | 캠핑고고`;
+    if (meta.twitter) (meta.twitter as Record<string, unknown>).title = `${page.title} | 캠핑고고`;
   }
 
   const canonical = `${BASE_URL}/캠핑장/${encodeURIComponent(campsite.sido)}/${encodeURIComponent(campsite.gungu ?? "기타")}/${campsite.id}`;
@@ -386,7 +387,7 @@ export default async function CampsitePage({
           </div>
         </div>
       </main>
-      <SiteFooter />
+      <SiteFooter showMonetization />
     </>
   );
 }

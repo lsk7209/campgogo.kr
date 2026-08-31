@@ -19,6 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ sido: str
   const { sido } = await params;
   const decoded = decodeURIComponent(sido);
   const rows = await db.select({ id: campsites.id }).from(campsites).where(eq(campsites.sido, decoded));
+  if (rows.length === 0) notFound();
   return buildRegionMeta(decoded, rows.length);
 }
 
@@ -116,7 +117,7 @@ export default async function SidoPage({ params }: { params: Promise<{ sido: str
           </div>
         </div>
       </main>
-      <SiteFooter />
+      <SiteFooter showMonetization />
     </>
   );
 }

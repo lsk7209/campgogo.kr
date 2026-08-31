@@ -4,6 +4,7 @@ import { StaticPageLayout } from "@/components/static-page-layout";
 export const metadata: Metadata = {
   title: "쿠키 정책",
   description: "캠핑고고가 사용하는 쿠키와 유사 기술의 종류 및 목적.",
+  alternates: { canonical: "https://campgogo.kr/cookies" },
 };
 
 export default function CookiesPage() {

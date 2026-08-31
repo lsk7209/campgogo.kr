@@ -1,14 +1,23 @@
 name: bulk-collect
 
 on:
-  schedule:
-    - cron: "0 0 * * 1"   # 매주 월요일 09:00 KST
   workflow_dispatch:
     inputs:
+      confirm:
+        description: "COLLECT_CAMPGOGO_BULK 입력"
+        type: string
+        required: true
       dry_run:
         description: "Dry run (데이터 저장 안 함)"
         type: boolean
-        default: false
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: campgogo-bulk-collect
+  cancel-in-progress: false
 
 jobs:
   collect:
@@ -26,18 +35,30 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - name: Run collect
+      - name: Validate explicit confirmation
+        env:
+          COLLECT_CONFIRMATION: ${{ inputs.confirm }}
         run: |
-          if [ "${{ inputs.dry_run }}" = "true" ]; then
-            npx tsx scripts/collect-bulk.ts --dry-run
+          if [ "$COLLECT_CONFIRMATION" != "COLLECT_CAMPGOGO_BULK" ]; then
+            echo "Exact confirmation is required."
+            exit 1
+          fi
+      - name: Run collect
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            npm run collect:dry
           else
-            npx tsx scripts/collect-bulk.ts
+            npm run collect
           fi
       - name: Notify on failure
         if: failure()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         run: |
-          if [ -n "${{ secrets.SLACK_WEBHOOK }}" ]; then
-            curl -X POST ${{ secrets.SLACK_WEBHOOK }} \
+          if [ -n "$SLACK_WEBHOOK" ]; then
+            curl --fail --show-error -X POST "$SLACK_WEBHOOK" \
               -H 'Content-Type: application/json' \
               -d "{\"text\":\"❌ bulk-collect 실패: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
           fi

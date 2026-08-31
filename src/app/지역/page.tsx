@@ -10,7 +10,7 @@ import { buildBreadcrumbJsonLd, safeJsonLd } from "@/lib/seo/json-ld";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "지역별 야영지 | 캠핑고고",
+  title: "지역별 야영지",
   description:
     "전국 17개 시도별 공공·저렴·차박 야영지를 모아봤습니다. 내 지역 야영지를 지금 바로 찾아보세요.",
   alternates: { canonical: "https://campgogo.kr/지역" },
@@ -237,7 +237,7 @@ export default async function RegionIndexPage() {
           </p>
         </div>
       </main>
-      <SiteFooter />
+      <SiteFooter showMonetization />
     </>
   );
 }

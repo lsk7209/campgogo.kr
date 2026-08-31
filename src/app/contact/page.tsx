@@ -5,6 +5,7 @@ import { ContactForm } from "@/components/contact-form";
 export const metadata: Metadata = {
   title: "정보 제보",
   description: "야영지 정보 오류 수정, 새 야영지 제보, 문의사항을 보내주세요.",
+  alternates: { canonical: "https://campgogo.kr/contact" },
 };
 
 export default function ContactPage() {

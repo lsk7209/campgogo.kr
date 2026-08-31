@@ -15,6 +15,7 @@ type GscSitemapStatus = {
 };
 
 const SITE_URL = siteUrl();
+const SUBMISSION_CONFIRMATION = "SUBMIT_CAMPGOGO_SITEMAP";
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -26,11 +27,19 @@ function isSuccessful(status: GscSitemapStatus) {
   return errors === 0 && warnings === 0 && !status.isPending;
 }
 
-export async function GET(req: Request) {
+export async function POST(req: Request) {
   const cronSecret = process.env.CRON_SECRET;
   const authHeader = req.headers.get("authorization");
   if (!cronSecret || !authHeader || authHeader !== `Bearer ${cronSecret}`) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const confirmation = new URL(req.url).searchParams.get("confirm");
+  if (confirmation !== SUBMISSION_CONFIRMATION) {
+    return Response.json(
+      { error: "Explicit sitemap submission confirmation required" },
+      { status: 428 }
+    );
   }
 
   if (!hasGscCredentials()) {

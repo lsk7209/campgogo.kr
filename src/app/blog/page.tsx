@@ -11,7 +11,7 @@ export const revalidate = 300;
 const PAGE_SIZE = 18; // 카드형 3×N = 18이 자연스럽다
 
 export const metadata: Metadata = {
-  title: "가이드 & 블로그 | 캠핑고고",
+  title: "가이드 & 블로그",
   description:
     "공공·저렴·차박 야영지를 찾는 실전 가이드, 시즌 추천, 합법성 정보를 출처와 함께 정리합니다.",
   alternates: {
@@ -317,7 +317,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
           </div>
         </div>
       </main>
-      <SiteFooter />
+      <SiteFooter showMonetization />
     </>
   );
 }

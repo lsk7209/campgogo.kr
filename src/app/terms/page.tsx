@@ -5,6 +5,7 @@ import { StaticPageLayout } from "@/components/static-page-layout";
 export const metadata: Metadata = {
   title: "이용약관",
   description: "캠핑고고 서비스 이용약관.",
+  alternates: { canonical: "https://campgogo.kr/terms" },
 };
 
 export default function TermsPage() {

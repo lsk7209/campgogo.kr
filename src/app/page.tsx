@@ -24,7 +24,7 @@ function parsePhotos(raw: unknown): { url: string }[] {
 }
 
 export const metadata: Metadata = {
-  title: "캠핑고고 — 예약 앱이 못 보여주는 야영지",
+  title: { absolute: "캠핑고고 — 예약 앱이 못 보여주는 야영지" },
   description:
     "공공·저렴·차박 가능 야영지를 찾아주는 사이트. 8,000곳+ 공공데이터 기반, 합법성 확인 포함.",
   alternates: { canonical: "https://campgogo.kr" },
@@ -585,7 +585,7 @@ export default async function HomePage() {
           <div style={{ borderTop: "1px solid var(--color-gray-200)" }} />
         </section>
       </main>
-      <SiteFooter />
+      <SiteFooter showMonetization />
     </>
   );
 }

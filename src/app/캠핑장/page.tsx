@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 const SITE_URL = process.env.SITE_URL ?? "https://campgogo.kr";
 
 export const metadata: Metadata = {
-  title: "전국 야영지 찾기 | 캠핑고고",
+  title: "전국 야영지 찾기",
   description:
     "공공·무료·차박 야영지 8,000곳+를 지역·테마·시즌·조건으로 찾아보세요. 예약 앱에 없는 야영지를 발굴합니다.",
   alternates: { canonical: `${SITE_URL}/캠핑장` },
@@ -372,7 +372,7 @@ export default async function CampsiteIndexPage() {
           )}
         </div>
       </main>
-      <SiteFooter />
+      <SiteFooter showMonetization />
     </>
   );
 }

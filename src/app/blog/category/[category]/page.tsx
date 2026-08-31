@@ -29,7 +29,8 @@ export async function generateMetadata({
   const { category } = await params;
   const decoded = decodeURIComponent(category);
   const BASE_URL = process.env.SITE_URL ?? "https://campgogo.kr";
-  const title = `${decoded} 블로그 | 캠핑고고`;
+  const title = `${decoded} 블로그`;
+  const socialTitle = `${title} | 캠핑고고`;
   const description = `캠핑고고 블로그 ${decoded} 카테고리 — 공공·차박·가성비 야영지 관련 글 모음.`;
   const canonical = `${BASE_URL}/blog/category/${encodeURIComponent(decoded)}`;
   const ogImage = `${BASE_URL}/api/og?title=${encodeURIComponent(decoded)}&subtitle=${encodeURIComponent("캠핑고고 블로그")}`;
@@ -37,8 +38,8 @@ export async function generateMetadata({
     title,
     description,
     alternates: { canonical },
-    openGraph: { title, description, type: "website", locale: "ko_KR", siteName: "캠핑고고", images: [{ url: ogImage, width: 1200, height: 630 }] },
-    twitter: { card: "summary_large_image", title, description, images: [ogImage] },
+    openGraph: { title: socialTitle, description, type: "website", locale: "ko_KR", siteName: "캠핑고고", images: [{ url: ogImage, width: 1200, height: 630 }] },
+    twitter: { card: "summary_large_image", title: socialTitle, description, images: [ogImage] },
   };
 }
 
@@ -370,7 +371,7 @@ export default async function BlogCategoryPage({
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooter showMonetization />
     </>
   );
 }

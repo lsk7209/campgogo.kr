@@ -73,10 +73,11 @@ export async function generateMetadata({
   const { theme } = await params;
   const decoded = decodeURIComponent(theme);
   const def = THEME_MAP[decoded];
-  if (!def) return { title: "테마 야영지 | 캠핑고고" };
+  if (!def) notFound();
 
   const count = await getCount(decoded);
-  const title = `${def.label} ${count}곳 | 캠핑고고`;
+  const title = `${def.label} ${count}곳`;
+  const socialTitle = `${title} | 캠핑고고`;
   const url = `${BASE_URL}/테마/${encodeURIComponent(decoded)}`;
 
   return {
@@ -84,7 +85,7 @@ export async function generateMetadata({
     description: def.description,
     alternates: { canonical: url },
     openGraph: {
-      title,
+      title: socialTitle,
       description: def.description,
       url,
       siteName: "캠핑고고",
@@ -93,7 +94,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: socialTitle,
       description: def.description,
     },
   };
@@ -329,7 +330,7 @@ export default async function ThemePage({
           </div>
         </div>
       </main>
-      <SiteFooter />
+      <SiteFooter showMonetization />
     </>
   );
 }
