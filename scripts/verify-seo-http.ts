@@ -142,9 +142,13 @@ await check("admin uses a secure browser session, preserves filters, and stays a
   });
   assert.equal(sessionResponse.status, 303);
   const loginRedirect = new URL(sessionResponse.headers.get("location") ?? "", BASE_URL);
+  const verificationBase = new URL(BASE_URL);
   assert.equal(loginRedirect.pathname, "/admin/review");
-  assert.equal(loginRedirect.port, new URL(BASE_URL).port);
-  assert.ok(["127.0.0.1", "localhost"].includes(loginRedirect.hostname));
+  assert.equal(loginRedirect.port, verificationBase.port);
+  assert.ok(
+    new Set([verificationBase.hostname, "127.0.0.1", "localhost"])
+      .has(loginRedirect.hostname),
+  );
   const setCookie = sessionResponse.headers.get("set-cookie") ?? "";
   assert.match(setCookie, /^campgogo_admin_session=/);
   assert.match(setCookie, /HttpOnly/i);
