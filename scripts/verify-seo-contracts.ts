@@ -252,8 +252,7 @@ check("sitemap lastmod values do not pretend every request changed static conten
   const sitemapIndex = read("src/app/sitemap.xml/route.ts");
   const staticSitemap = read("src/app/sitemap-static.xml/route.ts");
   assert.doesNotMatch(sitemapIndex, /<lastmod>/);
-  assert.doesNotMatch(staticSitemap, /new Date\(\)/);
-  assert.match(staticSitemap, /const STATIC_LASTMOD = "2026-08-31";/);
+  assert.doesNotMatch(staticSitemap, /<lastmod>|STATIC_LASTMOD|new Date\(\)/);
 });
 
 if (failures.length > 0) {

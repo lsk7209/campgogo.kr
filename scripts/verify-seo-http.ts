@@ -221,13 +221,11 @@ await check("root sitemap lists only the static and blog sitemap children", asyn
   assert.equal(page.body.includes("<lastmod>"), false);
 });
 
-await check("static sitemap has 17 honest fixed-lastmod entries", async () => {
+await check("static sitemap has 17 URLs without fabricated lastmod values", async () => {
   const page = await request("/sitemap-static.xml");
   assert.equal(page.status, 200);
   assert.equal(sitemapLocs(page.body).length, 17);
-  const lastmods = [...page.body.matchAll(/<lastmod>([\s\S]*?)<\/lastmod>/g)].map((match) => match[1]);
-  assert.equal(lastmods.length, 17);
-  assert.ok(lastmods.every((value) => value === "2026-08-31"));
+  assert.equal(page.body.includes("<lastmod>"), false);
 });
 
 await check("campsite sitemap contains only valid published reader URLs", async () => {

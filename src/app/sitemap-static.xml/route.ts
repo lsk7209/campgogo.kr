@@ -2,7 +2,6 @@ import { cleanSitemapLoc, siteUrl } from "@/lib/seo/site-url";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 86400;
-const STATIC_LASTMOD = "2026-08-31";
 
 const STATIC_PAGES = [
   { path: "/", freq: "daily", pri: "1.0" },
@@ -28,15 +27,15 @@ function esc(s: string) {
   return cleanSitemapLoc(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-function urlEntry(loc: string, lastmod: string, freq: string, pri: string) {
-  return `  <url>\n    <loc>${esc(loc)}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${freq}</changefreq>\n    <priority>${pri}</priority>\n  </url>`;
+function urlEntry(loc: string, freq: string, pri: string) {
+  return `  <url>\n    <loc>${esc(loc)}</loc>\n    <changefreq>${freq}</changefreq>\n    <priority>${pri}</priority>\n  </url>`;
 }
 
 export async function GET(): Promise<Response> {
   const entries: string[] = [];
 
   for (const { path, freq, pri } of STATIC_PAGES) {
-    entries.push(urlEntry(siteUrl(path), STATIC_LASTMOD, freq, pri));
+    entries.push(urlEntry(siteUrl(path), freq, pri));
   }
 
   const xml = [

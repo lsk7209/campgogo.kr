@@ -9,3 +9,15 @@
 - **Rollback boundary:** stage only the reviewed checkpoint files, create one coherent Git commit, and revert that commit if CI or public regression proof fails after push. Do not touch the original dirty checkout or delete the completed collection checkpoint.
 - **Deliberately not run or sent:** no Turso write/backfill, content generation/publication, GSC/IndexNow request, workflow dispatch, Vercel CLI/API mutation, or original-checkout cleanup.
 - **Single next step:** commit and push the verifier-only repair, reconfirm GitHub CI/Vercel on the final commit, then close checkpoint 034 in the fleet ledger.
+# Current Handoff - 2026-09-08 14:40 KST static sitemap repair pending release
+
+- **User goal:** finish the current `campgogo.kr` AdSense-readiness repair, verify it live, then stop without starting another site.
+- **Exact current state:** isolated GitHub-first clone at remote base `c2ec08063419efdad15d30a52f3eb1800fd5821b`; original dirty `E:\web\campgogokr` checkout remains untouched. Public static sitemap has 17 unrelated static/hub/trust URLs all claiming the same release date `2026-08-31` without per-page source dates.
+- **Completed work:** removed only the synthetic static `<lastmod>` field and updated source/HTTP regression contracts to require 17 unchanged URLs with no fabricated modification dates. Blog and campsite stored-date handling is unchanged.
+- **Changed files:** `src/app/sitemap-static.xml/route.ts`, `scripts/verify-seo-contracts.ts`, `scripts/verify-seo-http.ts`, and this handoff. No live system changed yet.
+- **Fresh validation:** `npm ci` pass; SEO contracts 16/16; lint and typecheck pass; direct route execution returns HTTP 200 XML with 17 URLs and zero lastmods; diff check pass; independent review GO. Full build compiled and completed TypeScript, then stopped during page-data collection because local `TURSO_DATABASE_URL` is absent; hosted build remains the release gate.
+- **Side effects/rollback:** local dependency install only. After release, rollback is a normal revert of the focused commit and Git-connected deployment.
+- **Deliberately not run:** no DB/content/account/CMP/indexing/direct-Vercel mutation and no edit to the dirty primary checkout.
+- **Single next step:** commit the exact four-file allowlist, push `main`, require hosted checks, verify public static/blog sitemaps, update fleet evidence, and stop.
+
+---
