@@ -42,22 +42,33 @@ export async function GET(req: Request) {
     return Response.json({ skipped: true, reason: `일 예산 소진 ($${spent.toFixed(3)})` });
   }
 
-  // 이미 pages 레코드가 있는 캠핑장 ID 목록
-  const existingPageIds = await db
-    .select({ campsiteId: pages.campsiteId })
-    .from(pages)
-    .where(eq(pages.type, "campsite"));
-  const excludeIds = existingPageIds.map((r) => r.campsiteId).filter(Boolean) as string[];
-
-  // 처리할 캠핑장 선택 (uniquePoints 없고, 위경도 있는 것 우선)
-  const candidates = await db.select().from(campsites)
-    .where(
-      excludeIds.length > 0
-        ? and(isNull(campsites.uniquePoints), notInArray(campsites.id, excludeIds))
-        : isNull(campsites.uniquePoints)
+  // 처리할 캠핑장 선택 (pages 레코드가 없고 uniquePoints가 없는 대상 우선, LEFT JOIN 단일 쿼리)
+  const candidatesResult = await db
+    .select({
+      id: campsites.id,
+      name: campsites.name,
+      sido: campsites.sido,
+      gungu: campsites.gungu,
+      address: campsites.address,
+      operator: campsites.operator,
+      isPublic: campsites.isPublic,
+      isFree: campsites.isFree,
+      isCheap: campsites.isCheap,
+      isChabak: campsites.isChabak,
+      type: campsites.type,
+      facilities: campsites.facilities,
+      price1Night: campsites.price1Night,
+    })
+    .from(campsites)
+    .leftJoin(
+      pages,
+      and(eq(pages.campsiteId, campsites.id), eq(pages.type, "campsite"))
     )
+    .where(and(isNull(campsites.uniquePoints), isNull(pages.id)))
     .orderBy(campsites.fitScore)
     .limit(BATCH);
+
+  const candidates = candidatesResult;
 
   if (candidates.length === 0) {
     return Response.json({ done: true, reason: "처리할 캠핑장 없음" });
