@@ -5,6 +5,7 @@ export function GET(): Response {
     "User-agent: *",
     "Allow: /",
     "Disallow: /api/",
+    "Disallow: /*?",
     "",
     "# AI 크롤러 허용 (GEO 전략)",
     "User-agent: GPTBot",

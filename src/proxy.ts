@@ -10,7 +10,17 @@ const REWRITE_MAP: Record<string, string> = {
   "/지도": "/ko-jido",
 };
 
+// 봇이 검색·필터(쿼리파라미터) URL을 대량 크롤하면 SSR 및 Turso reads가
+// 폭주하므로, 봇의 쿼리스트링 요청을 Edge에서 403 차단(DB 도달 전).
+const BOT_UA =
+  /bot|crawl|spider|slurp|Googlebot|bingbot|Bytespider|GPTBot|ClaudeBot|PerplexityBot|OAI-SearchBot|YandexBot|Baiduspider|DuckDuckBot|Yeti|Daumoa/i;
+
 export function proxy(req: NextRequest) {
+  const ua = req.headers.get("user-agent") || "";
+  if (req.nextUrl.search && BOT_UA.test(ua)) {
+    return new NextResponse("Forbidden", { status: 403 });
+  }
+
   let pathname: string;
   try {
     pathname = decodeURIComponent(req.nextUrl.pathname);
@@ -29,5 +39,5 @@ export function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).+)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };

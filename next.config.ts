@@ -11,6 +11,7 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
+    minimumCacheTTL: 2678400,
     remotePatterns: [
       { protocol: "https", hostname: "*.gocamping.or.kr" },
       { protocol: "http", hostname: "*.gocamping.or.kr" },
