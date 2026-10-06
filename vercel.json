@@ -2,10 +2,10 @@
   "framework": "nextjs",
   "functions": {
     "src/app/api/**/*.ts": { "maxDuration": 15 },
-    "src/app/api/cron/enrich-ai/route.ts": { "maxDuration": 180 }
+    "src/app/api/cron/enrich-ai/route.ts": { "maxDuration": 60 }
   },
   "crons": [
-    { "path": "/api/cron/enrich-ai",          "schedule": "0 */3 * * *" },
+    { "path": "/api/cron/enrich-ai",          "schedule": "0 3 * * *" },
     { "path": "/api/cron/publish",             "schedule": "0 21 * * *"  },
     { "path": "/api/cron/collect-incremental", "schedule": "0 0 * * *"   },
     { "path": "/api/cron/publish-blog",        "schedule": "0 */12 * * *" },

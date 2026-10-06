@@ -4,9 +4,9 @@ import { isNull, eq, and, notInArray, sql } from "drizzle-orm";
 import { enrichCampsite, runQualityGates } from "@/lib/ai/gemini";
 
 export const runtime = "nodejs";
-export const maxDuration = 300;
+export const maxDuration = 60;
 
-const BATCH = 5;          // 1회 cron 처리 수
+const BATCH = 3;          // 1회 cron 처리 수
 const DAILY_BUDGET = 5.0; // 일 최대 $5
 const COST_PER_CALL = 0.000375; // gemini-2.0-flash 1K token 기준 (approximate)
 
