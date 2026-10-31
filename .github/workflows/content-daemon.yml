@@ -1,0 +1,45 @@
+name: 6-Hour Content Improvement Daemon
+
+on:
+  schedule:
+    - cron: "0 */6 * * *" # 매 6시간마다 (00:00, 06:00, 12:00, 18:00 UTC)
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry Run (실제 저장 및 API 제출 생략)"
+        type: boolean
+        default: false
+      batch_size:
+        description: "발행할 블로그 편수 (기본 1)"
+        type: string
+        default: "1"
+
+jobs:
+  run-daemon:
+    name: 6시간 콘텐츠 자동 개선
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+      TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+      INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY || '9c8b7a6e5f4d3c2b' }}
+      GSC_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GSC_SERVICE_ACCOUNT_EMAIL }}
+      GSC_PRIVATE_KEY: ${{ secrets.GSC_PRIVATE_KEY }}
+      SITE_URL: "https://campgogo.kr"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Run Content Daemon
+        run: |
+          ARGS=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          if [ -n "${{ inputs.batch_size }}" ]; then
+            ARGS="$ARGS --batch=${{ inputs.batch_size }}"
+          fi
+          bun scripts/content-daemon.ts $ARGS

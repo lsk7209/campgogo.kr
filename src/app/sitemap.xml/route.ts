@@ -6,6 +6,7 @@ export const revalidate = 3600;
 const SITEMAPS = [
   siteUrl("/sitemap-static.xml"),
   siteUrl("/sitemap-blog.xml"),
+  siteUrl("/sitemap-campsites.xml"),
 ];
 
 export async function GET(): Promise<Response> {
